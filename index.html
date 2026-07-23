@@ -1,0 +1,3106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ALL TOOLS RYANZ</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ====== GLOBAL ====== */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: #0b0b0b;
+      background-image: radial-gradient(circle at 20% 30%, #1a1a1a 0%, #070707 90%);
+      color: #e0e0e0;
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      padding: 16px 12px 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position:relative;
+    }
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:#1a1a1a; }
+    ::-webkit-scrollbar-thumb { background:#444; border-radius:10px; }
+    ::-webkit-scrollbar-thumb:hover { background:#666; }
+    .app-container { max-width:820px; width:100%; margin:0 auto; }
+
+    /* ====== AUTH SCREENS ====== */
+    #authScreen {
+      position: fixed;
+      top:0; left:0; width:100%; height:100%;
+      background: #0b0b0b;
+      background-image: radial-gradient(circle at 30% 40%, #1a1a1a 0%, #050505 100%);
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    #authScreen.hidden {
+      opacity: 0;
+      transform: scale(1.1);
+      pointer-events: none;
+    }
+    .auth-box {
+      background: rgba(22,22,28,0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 30px 28px;
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid rgba(255,255,255,0.06);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    }
+    .auth-box .title {
+      font-family: 'Orbitron', monospace;
+      font-size: 28px;
+      font-weight: 900;
+      text-align: center;
+      background: linear-gradient(135deg, #fff, #aaa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+    .auth-box .sub {
+      text-align: center;
+      color: #888;
+      font-size: 14px;
+      letter-spacing: 1px;
+      margin-bottom: 24px;
+      font-weight: 300;
+    }
+    .auth-box .form-group { margin-bottom: 16px; }
+    .auth-box label { display:block; font-size:13px; color:#aaa; margin-bottom:4px; font-weight:300; }
+    .auth-box input {
+      width:100%; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.08);
+      border-radius:12px; padding:12px 16px; color:#e8e8e8; font-size:15px;
+      font-family:'Poppins',sans-serif; outline:none; transition:border-color 0.3s;
+    }
+    .auth-box input:focus { border-color:#666; }
+    .auth-box .btn-auth {
+      width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12);
+      border-radius:50px; padding:14px; font-size:16px; font-weight:600; color:#ddd;
+      cursor:pointer; transition:all 0.3s; font-family:'Poppins',sans-serif; letter-spacing:1px; margin-top:8px;
+    }
+    .auth-box .btn-auth:hover { background:rgba(255,255,255,0.1); border-color:#888; color:#fff; }
+    .auth-box .switch-link { text-align:center; margin-top:16px; font-size:13px; color:#666; }
+    .auth-box .switch-link span { color:#8ab4f8; cursor:pointer; font-weight:600; transition:color 0.2s; }
+    .auth-box .switch-link span:hover { color:#aac8ff; }
+    .auth-box .error-msg { color:#ef9a9a; font-size:13px; min-height:22px; margin-top:8px; text-align:center; }
+    .auth-box .success-msg { color:#81c784; font-size:13px; min-height:22px; margin-top:8px; text-align:center; }
+
+    /* ====== ROCKET ====== */
+    #rocketCanvas {
+      position: fixed;
+      top:0; left:0; width:100%; height:100%;
+      pointer-events: none;
+      z-index: 99998;
+    }
+
+    /* ====== CHAT STYLE ====== */
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 420px;
+      background: rgba(22,22,28,0.6);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    .chat-header {
+      padding: 10px 16px;
+      background: rgba(0,0,0,0.3);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .chat-header .chat-title { font-size: 14px; font-weight: 600; color: #ddd; }
+    .chat-header .chat-users { font-size: 11px; color: #888; }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: rgba(0,0,0,0.15);
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
+    .chat-message {
+      max-width: 80%;
+      padding: 8px 14px;
+      border-radius: 12px;
+      word-wrap: break-word;
+      animation: fadeIn 0.2s ease;
+    }
+    .chat-message.own { align-self: flex-end; background: #075e54; color: #fff; border-bottom-right-radius: 4px; }
+    .chat-message.other { align-self: flex-start; background: rgba(255,255,255,0.08); color: #e0e0e0; border-bottom-left-radius: 4px; }
+    .chat-message .msg-username { font-size: 11px; font-weight: 600; color: #8ab4f8; margin-bottom: 2px; display: block; }
+    .chat-message.own .msg-username { color: #a8d8b0; }
+    .chat-message .msg-time { font-size: 9px; color: rgba(255,255,255,0.4); margin-left: 8px; }
+    .chat-message .msg-text { font-size: 13px; line-height: 1.4; }
+    .chat-input-area {
+      display: flex;
+      gap: 8px;
+      padding: 10px 16px;
+      background: rgba(0,0,0,0.25);
+      border-top: 1px solid rgba(255,255,255,0.04);
+      flex-shrink: 0;
+    }
+    .chat-input-area input { flex:1; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.06); border-radius:20px; padding:8px 16px; color:#e8e8e8; font-size:13px; font-family:'Poppins',sans-serif; outline:none; transition:border-color 0.2s; }
+    .chat-input-area input:focus { border-color:#555; }
+    .chat-input-area input::placeholder { color:#666; }
+    .chat-input-area .btn-tool { width:auto; padding:8px 16px; margin-top:0; border-radius:20px; }
+
+    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+    /* ====== STYLE TOOLS ====== */
+    .top-device-bar {
+      display:flex; justify-content:space-between; align-items:center;
+      background:rgba(20,20,20,0.7); backdrop-filter:blur(8px);
+      padding:8px 16px; border-radius:50px;
+      border:1px solid rgba(255,255,255,0.04);
+      font-size:11px; color:#aaa; margin-bottom:18px;
+      flex-wrap:wrap; gap:6px 10px;
+    }
+    .device-info { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+    .device-info i { font-size:13px; color:#888; margin-right:4px; }
+    .device-info span { display:inline-flex; align-items:center; gap:4px; }
+    .battery-wrap { display:flex; align-items:center; gap:5px; }
+    .battery-level { font-weight:600; color:#c8e6c9; }
+    .battery-icon { font-size:16px; }
+    .battery-icon.low { color:#ef9a9a; }
+    .battery-icon.medium { color:#ffcc80; }
+    .battery-icon.high { color:#81c784; }
+    .main-title {
+      font-family:'Orbitron',monospace; font-weight:900; font-size:28px;
+      letter-spacing:3px; text-align:center;
+      background:linear-gradient(135deg,#f0f0f0,#b0b0b0);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      text-shadow:0 0 30px rgba(255,255,255,0.05);
+      margin:6px 0 20px; word-break:break-word;
+    }
+    .main-title small {
+      font-size:14px; font-weight:300; letter-spacing:1px;
+      -webkit-text-fill-color:#666; display:block;
+      font-family:'Poppins',sans-serif; margin-top:2px;
+    }
+    .tools-grid {
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+      gap:18px; margin:20px 0 30px;
+    }
+    .tool-card {
+      background:rgba(22,22,28,0.75); backdrop-filter:blur(6px);
+      border-radius:20px; padding:18px 16px 20px;
+      border:1px solid rgba(255,255,255,0.04);
+      box-shadow:0 12px 30px rgba(0,0,0,0.6);
+      transition:transform 0.2s,border-color 0.2s,box-shadow 0.3s;
+      display:flex; flex-direction:column;
+    }
+    .tool-card:hover {
+      transform:translateY(-4px);
+      border-color:rgba(255,255,255,0.08);
+      box-shadow:0 20px 40px rgba(0,0,0,0.8);
+    }
+    .tool-card .card-header {
+      display:flex; align-items:center; gap:10px;
+      margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.03);
+      padding-bottom:10px;
+    }
+    .tool-card .card-header i {
+      font-size:22px; width:36px; height:36px;
+      display:flex; align-items:center; justify-content:center;
+      background:rgba(255,255,255,0.04); border-radius:12px; color:#ccc;
+    }
+    .tool-card .card-header h3 { font-size:15px; font-weight:600; letter-spacing:0.3px; color:#ddd; flex:1; }
+    .tool-card .card-body { flex:1; display:flex; flex-direction:column; gap:10px; }
+    .tool-card input, .tool-card select {
+      background:rgba(0,0,0,0.45); border:1px solid rgba(255,255,255,0.07);
+      border-radius:12px; padding:10px 14px; color:#e8e8e8; font-size:13px;
+      font-family:'Poppins',sans-serif; outline:none; transition:border 0.2s;
+      width:100%;
+    }
+    .tool-card input::placeholder { color:#777; }
+    .tool-card input:focus, .tool-card select:focus { border-color:#666; }
+    .tool-card select option { background:#1a1a1a; color:#ddd; }
+    .btn-tool {
+      background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06);
+      border-radius:30px; padding:10px 16px; font-weight:600; font-size:13px;
+      color:#d0d0d0; cursor:pointer; transition:all 0.25s;
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:8px; font-family:'Poppins',sans-serif; width:100%; margin-top:4px;
+    }
+    .btn-tool:hover { background:rgba(255,255,255,0.09); border-color:rgba(255,255,255,0.15); color:#fff; }
+    .btn-tool:active { transform:scale(0.97); }
+    .btn-tool i { font-size:14px; }
+    .btn-primary { background:#2a2a35; border-color:#444; }
+    .btn-primary:hover { background:#3a3a48; border-color:#666; }
+    .result-box {
+      background:rgba(0,0,0,0.35); border-radius:10px; padding:10px 12px;
+      font-size:12px; color:#aaa; max-height:200px; overflow-y:auto;
+      word-break:break-word; border:1px solid rgba(255,255,255,0.03);
+      margin-top:4px; min-height:50px;
+    }
+    .result-box a { color:#8ab4f8; text-decoration:underline; }
+    .result-box .file-link { display:block; padding:4px 0; }
+    .footer {
+      margin-top:30px; padding:20px 10px 10px; text-align:center;
+      color:#2a2a2a; font-size:13px; letter-spacing:0.5px;
+      border-top:1px solid rgba(255,255,255,0.02); width:100%;
+      font-weight:300;
+    }
+    .footer .brand { font-family:'Orbitron',monospace; font-weight:400; font-size:15px; color:#333; letter-spacing:1px; }
+    .footer .sub { color:#2a2a2a; font-size:11px; margin-top:4px; }
+    .footer .version { color:#222; font-size:10px; margin-top:2px; }
+    @media (max-width:500px) {
+      .tools-grid { grid-template-columns:1fr; }
+      .top-device-bar { font-size:10px; padding:6px 12px; }
+      .main-title { font-size:22px; }
+      .main-title small { font-size:12px; }
+      .auth-box { padding:20px 18px; }
+      .auth-box .title { font-size:22px; }
+      .chat-container { height: 350px; }
+    }
+
+    /* ====== MEMORY MATCH ====== */
+    .memory-container {
+      display:flex; flex-direction:column; align-items:center; gap:10px; width:100%;
+    }
+    .memory-controls {
+      display:flex; gap:8px; flex-wrap:wrap; justify-content:center; width:100%;
+    }
+    .memory-controls select, .memory-controls .btn-tool {
+      flex:0 0 auto; padding:6px 12px; font-size:12px; margin-top:0;
+    }
+    .memory-controls .btn-tool { width:auto; }
+    .memory-status {
+      font-size:14px; color:#aaa; text-align:center; min-height:28px;
+    }
+    .memory-score {
+      display:flex; gap:16px; flex-wrap:wrap; justify-content:center;
+    }
+    .memory-score .score-item {
+      font-size:13px; color:#ccc; padding:4px 12px; background:rgba(0,0,0,0.3); border-radius:8px;
+    }
+    .memory-score .score-item span { color:#ffd54f; font-weight:bold; }
+    .memory-grid {
+      display:grid; grid-template-columns:repeat(10,1fr); gap:4px;
+      width:100%; max-width:600px; aspect-ratio:10/5;
+      touch-action:none;
+    }
+    .memory-card {
+      background:#2a2a35;
+      border-radius:6px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:28px;
+      cursor:pointer;
+      transition:all 0.2s;
+      border:2px solid transparent;
+      aspect-ratio:1/1;
+      user-select:none;
+      touch-action:none;
+      text-shadow:0 0 10px rgba(255,255,255,0.1);
+    }
+    .memory-card:hover { transform:scale(1.03); border-color:rgba(255,255,255,0.1); }
+    .memory-card.flipped {
+      background:#3a3a4a;
+      border-color:rgba(255,255,255,0.15);
+      transform:scale(0.95);
+    }
+    .memory-card.matched {
+      background:#1a3a1a;
+      border-color:#4caf50;
+      transform:scale(0.92);
+      cursor:default;
+      opacity:0.7;
+    }
+    .memory-card.matched:hover { transform:scale(0.92); }
+    .memory-card.selected {
+      border-color:#ffd54f;
+      transform:scale(1.05);
+    }
+    .memory-card:active { transform:scale(0.92); }
+
+    /* ====== CHESS ====== */
+    .chess-container {
+      display:flex; flex-direction:column; align-items:center; gap:8px; width:100%;
+    }
+    .chess-board {
+      display:grid; grid-template-columns:repeat(8,1fr); gap:1px;
+      width:100%; max-width:400px; aspect-ratio:1/1;
+      background:#333; border-radius:8px; padding:4px;
+      user-select:none; touch-action:none;
+    }
+    .chess-cell {
+      aspect-ratio:1/1;
+      display:flex; align-items:center; justify-content:center;
+      font-size:28px;
+      cursor:pointer;
+      border-radius:4px;
+      transition:background 0.15s, transform 0.1s;
+      font-weight:bold;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      position:relative;
+    }
+    .chess-cell.light { background: #f0d9b5; }
+    .chess-cell.dark { background: #b58863; }
+    .chess-cell.selected { outline:3px solid #ffd54f; outline-offset:-2px; }
+    .chess-cell.highlight-green::after {
+      content: '●';
+      position:absolute;
+      font-size:20px;
+      color:#44ff44;
+      text-shadow:0 0 10px rgba(68,255,68,0.5);
+      opacity:0.8;
+    }
+    .chess-cell.highlight-red::after {
+      content: '●';
+      position:absolute;
+      font-size:20px;
+      color:#ff4444;
+      text-shadow:0 0 10px rgba(255,68,68,0.5);
+      opacity:0.8;
+    }
+    .chess-cell .piece-white { color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+    .chess-cell .piece-black { color: #000; text-shadow: 0 1px 2px rgba(255,255,255,0.2); }
+    .chess-status {
+      font-size:14px; color:#aaa; text-align:center; min-height:24px;
+    }
+    .chess-controls {
+      display:flex; gap:8px; flex-wrap:wrap; justify-content:center; width:100%;
+    }
+    .chess-controls .btn-tool { flex:0 0 auto; width:auto; padding:8px 16px; margin-top:0; }
+    .chess-cell:active { transform:scale(0.92); }
+
+    /* ====== KALKULATOR ====== */
+    .calc-display {
+      background:rgba(0,0,0,0.6); border-radius:12px; padding:10px 14px;
+      text-align:right; font-size:26px; font-weight:600; letter-spacing:1px;
+      color:#f0f0f0; min-height:54px; font-family:'Orbitron',monospace;
+      border:1px solid rgba(255,255,255,0.04); margin-bottom:6px;
+      overflow-x:auto; white-space:nowrap;
+    }
+    .calc-grid {
+      display:grid; grid-template-columns:repeat(4,1fr); gap:6px;
+    }
+    .calc-grid button {
+      background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.04);
+      border-radius:12px; padding:12px 0; color:#ddd; font-size:18px;
+      font-weight:600; cursor:pointer; transition:0.15s;
+      font-family:'Poppins',sans-serif;
+    }
+    .calc-grid button:hover { background:rgba(255,255,255,0.08); }
+    .calc-grid button:active { transform:scale(0.94); }
+    .calc-grid .op { color:#9c9cff; }
+    .calc-grid .eq { background:#3a3a55; color:#fff; }
+    .calc-grid .eq:hover { background:#4a4a6a; }
+    .calc-grid .clear { color:#ff8a8a; }
+
+    /* ====== BLOCK BLAST ====== */
+    .bb-container {
+      display:flex; flex-direction:column; align-items:center; gap:10px; width:100%;
+    }
+    .bb-grid {
+      display:grid; grid-template-columns:repeat(8,1fr); gap:2px;
+      background:#1a1a1a; border-radius:12px; padding:6px;
+      width:100%; max-width:400px; aspect-ratio:1/1;
+      touch-action:none; user-select:none; position:relative;
+    }
+    .bb-cell {
+      background:#2a2a35; border-radius:4px; transition:background 0.15s, transform 0.15s;
+      aspect-ratio:1/1; position:relative;
+    }
+    .bb-cell.filled { border:1px solid rgba(255,255,255,0.1); }
+    .bb-cell.preview { opacity:0.5; transform:scale(0.9); border:1px dashed rgba(255,255,255,0.3); }
+    .bb-cell.preview.invalid { opacity:0.2; border-color:#ff4444; transform:scale(0.85); }
+    .bb-cell.preview.valid { opacity:0.7; border-color:#44ff44; transform:scale(0.9); }
+    .bb-pieces {
+      display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
+      min-height:80px; padding:6px;
+      background:rgba(0,0,0,0.3); border-radius:12px;
+      width:100%; max-width:400px;
+    }
+    .bb-piece {
+      display:grid; gap:2px;
+      background:rgba(255,255,255,0.05); border-radius:8px; padding:4px;
+      cursor:grab; transition:transform 0.2s, opacity 0.2s;
+      border:2px solid transparent; touch-action:none;
+    }
+    .bb-piece:hover { transform:scale(1.05); border-color:rgba(255,255,255,0.2); }
+    .bb-piece.used { opacity:0.2; pointer-events:none; }
+    .bb-piece.dragging { opacity:0.3; transform:scale(0.9); }
+    .bb-mini-cell { width:20px; height:20px; border-radius:3px; background:#2a2a35; }
+    .bb-ghost {
+      position:fixed; pointer-events:none; z-index:9999;
+      display:grid; gap:2px; padding:4px;
+      background:rgba(0,0,0,0.6); border-radius:8px;
+      border:2px solid rgba(255,255,255,0.3); opacity:0.9;
+      transform:translate(-50%, -50%); touch-action:none;
+    }
+    .bb-ghost .bb-mini-cell { width:24px; height:24px; }
+    .bb-score { font-family:'Orbitron',monospace; font-size:24px; color:#ffd54f; text-align:center; }
+    .bb-win-overlay {
+      position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.85); z-index:99999;
+      display:flex; flex-direction:column; justify-content:center; align-items:center;
+      padding:20px; text-align:center;
+    }
+    .bb-win-overlay h1 { font-family:'Orbitron',monospace; font-size:48px; color:#ffd54f; text-shadow:0 0 60px rgba(255,215,0,0.5); margin-bottom:20px; }
+    .bb-win-overlay p { font-size:20px; color:#ddd; margin-bottom:30px; }
+    .bb-win-overlay .btn-tool { max-width:300px; }
+
+    /* ====== DADU ====== */
+    .dice-area { display:flex; flex-direction:column; align-items:center; gap:12px; padding:6px 0; }
+    .dice-box { font-size:70px; line-height:1; transition:transform 0.15s; user-select:none; text-shadow:0 0 30px rgba(255,255,255,0.03); }
+    .dice-box.rolling { animation:diceRoll 0.5s ease; }
+    @keyframes diceRoll {
+      0% { transform:rotate(0deg) scale(1); }
+      25% { transform:rotate(20deg) scale(1.2); }
+      50% { transform:rotate(-20deg) scale(1.3); }
+      75% { transform:rotate(10deg) scale(1.1); }
+      100% { transform:rotate(0deg) scale(1); }
+    }
+    .dice-result { font-size:15px; color:#aaa; font-weight:300; }
+
+    /* ====== SLOT ====== */
+    .slot-container { display:flex; flex-direction:column; align-items:center; gap:10px; }
+    .slot-reels { display:flex; gap:15px; background:rgba(0,0,0,0.5); padding:15px 20px; border-radius:16px; border:2px solid #444; }
+    .slot-reel { font-size:42px; font-weight:bold; width:60px; text-align:center; color:#fff; background:#222; border-radius:10px; padding:8px 0; font-family:'Orbitron',monospace; }
+    .slot-reel.spinning { animation:slotSpin 0.15s steps(1) infinite; }
+    @keyframes slotSpin { 0% { transform:translateY(0); } 100% { transform:translateY(-5px); } }
+    .slot-result { font-size:20px; font-weight:bold; color:#ffd54f; min-height:40px; text-align:center; }
+    .slot-credit { font-size:14px; color:#aaa; }
+    .mahjong-reels { background:rgba(30,60,30,0.4); border-color:#4caf50; }
+    .mahjong-reel { font-size:44px; background:#1a2a1a; color:#ffd700; border:1px solid #4caf50; font-family:'Poppins',sans-serif; width:70px; }
+    .mahjong-reel.spinning { animation:slotSpin 0.12s steps(1) infinite; }
+
+    /* ====== USTADZ ====== */
+    .ustadz-answer {
+      background:rgba(0,0,0,0.3); border-radius:12px; padding:10px 14px;
+      font-size:13px; color:#bbb; min-height:48px; border-left:3px solid #555;
+      margin-top:4px; font-style:italic;
+    }
+
+    /* ====== SPAM LOG ====== */
+    .spam-log {
+      font-size:11px; color:#666; max-height:44px; overflow-y:auto;
+      background:rgba(0,0,0,0.3); border-radius:8px; padding:6px 10px;
+      font-family:monospace; margin-top:4px; line-height:1.5;
+    }
+
+    /* ====== UPLOAD AREA ====== */
+    .upload-area {
+      border:2px dashed rgba(255,255,255,0.08); border-radius:16px;
+      padding:18px 10px; text-align:center; color:#888; font-size:13px;
+      cursor:pointer; transition:0.2s; background:rgba(0,0,0,0.2);
+    }
+    .upload-area:hover { border-color:#555; background:rgba(255,255,255,0.02); }
+    .upload-area i { font-size:28px; display:block; margin-bottom:6px; color:#666; }
+    .upload-area input[type="file"] { display:none; }
+
+    /* ====== WIN NOTIF ====== */
+    .win-notif {
+      background:#f0f0f0; border:1px solid #ccc; border-radius:8px;
+      padding:16px; width:100%; max-width:340px;
+      box-shadow:0 8px 20px rgba(0,0,0,0.3);
+      font-family:'Segoe UI',sans-serif; margin:0 auto;
+    }
+    .win-notif .header { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+    .win-notif .header i { font-size:24px; color:#0078d7; }
+    .win-notif .header span { font-weight:bold; font-size:14px; color:#000; }
+    .win-notif .content { font-size:16px; color:#222; padding:10px 0; min-height:60px; word-break:break-word; border-top:1px solid #ddd; border-bottom:1px solid #ddd; }
+    .win-notif .actions { display:flex; justify-content:flex-end; gap:8px; margin-top:10px; }
+    .win-notif .actions button { background:#e0e0e0; border:1px solid #ccc; border-radius:4px; padding:4px 12px; font-size:12px; cursor:default; color:#333; }
+
+    /* ====== SPINNER ====== */
+    .spinner {
+      display:inline-block; width:14px; height:14px;
+      border:2px solid rgba(255,255,255,0.2); border-top-color:#fff;
+      border-radius:50%; animation:spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* ====== FILE INPUT ====== */
+    input[type="file"] {
+      background:rgba(0,0,0,0.45); border:1px solid rgba(255,255,255,0.07);
+      border-radius:12px; padding:8px 12px; color:#e8e8e8; font-size:12px;
+      font-family:'Poppins',sans-serif; outline:none; width:100%; cursor:pointer;
+    }
+    input[type="file"]::-webkit-file-upload-button {
+      background:#2a2a35; border:none; border-radius:8px;
+      padding:6px 12px; color:#ccc; font-weight:600; margin-right:10px; cursor:pointer;
+    }
+
+    /* ====== AUDIO PLAYER ====== */
+    .audio-player-container {
+      display:flex; flex-direction:column; align-items:center; gap:10px; width:100%;
+    }
+    .audio-info {
+      display:flex; justify-content:space-between; width:100%; font-size:13px; color:#aaa;
+    }
+    .audio-controls {
+      display:flex; gap:12px; align-items:center; width:100%; flex-wrap:wrap;
+    }
+    .audio-controls .btn-tool { flex:0 0 auto; width:auto; padding:8px 16px; margin-top:0; }
+    .audio-progress {
+      flex:1; min-width:100px; height:6px; background:#333; border-radius:10px; cursor:pointer; position:relative;
+    }
+    .audio-progress-fill {
+      height:100%; background:#ffd54f; border-radius:10px; width:0%; transition:width 0.1s;
+    }
+    .audio-time { font-size:13px; color:#aaa; min-width:90px; text-align:center; }
+    .audio-status { font-size:12px; color:#888; text-align:center; min-height:20px; }
+  </style>
+</head>
+<body>
+
+  <!-- ====== AUTH SCREEN ====== -->
+  <div id="authScreen">
+    <div class="auth-box" id="authBox">
+      <div class="title">ALL TOOLS RYANZ</div>
+      <div class="sub" id="authSub">Daftar untuk memulai</div>
+      <div id="registerForm">
+        <div class="form-group"><label>Username</label><input type="text" id="regUsername" placeholder="Buat username" /></div>
+        <div class="form-group"><label>Password</label><input type="password" id="regPassword" placeholder="Buat password" /></div>
+        <div class="form-group"><label>Konfirmasi Password</label><input type="password" id="regConfirm" placeholder="Ulangi password" /></div>
+        <button class="btn-auth" id="registerBtn">DAFTAR</button>
+        <div class="switch-link">Sudah punya akun? <span id="switchToLogin">Masuk di sini</span></div>
+        <div class="error-msg" id="authError"></div>
+        <div class="success-msg" id="authSuccess"></div>
+      </div>
+      <div id="loginForm" style="display:none;">
+        <div class="form-group"><label>Username</label><input type="text" id="loginUsername" placeholder="Masukkan username" /></div>
+        <div class="form-group"><label>Password</label><input type="password" id="loginPassword" placeholder="Masukkan password" /></div>
+        <button class="btn-auth" id="loginBtn">MASUK</button>
+        <div class="switch-link">Belum punya akun? <span id="switchToRegister">Daftar di sini</span></div>
+        <div class="error-msg" id="loginError"></div>
+        <div class="success-msg" id="loginSuccess"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== ROCKET CANVAS ====== -->
+  <canvas id="rocketCanvas"></canvas>
+
+  <!-- ====== MAIN APP ====== -->
+  <div id="appWrapper" style="display:none;" class="app-container">
+
+    <!-- DEVICE BAR -->
+    <div class="top-device-bar" id="deviceBar">
+      <div class="device-info">
+        <span><i class="fas fa-desktop"></i> <span id="deviceBrowser">--</span></span>
+        <span><i class="fas fa-mobile-alt"></i> <span id="deviceOS">--</span></span>
+        <span><i class="fas fa-arrow-right"></i> <span id="deviceScreen">--</span></span>
+        <span><i class="fas fa-globe"></i> Status: <span id="onlineStatus" style="font-weight:600;">Online</span></span>
+        <span><i class="fas fa-wifi"></i> WiFi: <span id="wifiStatus" style="font-weight:600;">On</span>
+          <span id="wifiName" style="font-size:10px;color:#888;margin-left:2px;"></span>
+        </span>
+      </div>
+      <div class="battery-wrap">
+        <i class="fas fa-bolt" style="color:#888;font-size:12px;"></i>
+        <span class="battery-icon" id="batteryIcon"><i class="fas fa-battery-three-quarters"></i></span>
+        <span class="battery-level" id="batteryLevel">--</span>
+      </div>
+    </div>
+
+    <h1 class="main-title">ALL TOOLS RYANZ <small>⚡ by ryanz</small></h1>
+
+    <div class="tools-grid">
+
+      <!-- CHAT ROOM -->
+      <div class="tool-card" style="grid-column:span 1;">
+        <div class="card-header"><i class="fas fa-comments" style="color:#25d366;"></i><h3>Chat Room 💬</h3></div>
+        <div class="card-body">
+          <div class="chat-container">
+            <div class="chat-header">
+              <span class="chat-title"><i class="fas fa-users"></i> ALL TOOLS RYANZ</span>
+              <span class="chat-users" id="chatUserCount">0 online</span>
+            </div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input-area">
+              <input type="text" id="chatInput" placeholder="Ketik pesan..." />
+              <button class="btn-tool btn-primary" onclick="sendMessage()" style="width:auto;"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </div>
+          <div style="font-size:10px;color:#555;text-align:center;">🔒 Chat real-time antar pengguna (buka di beberapa tab untuk demo)</div>
+        </div>
+      </div>
+
+      <!-- MEMORY MATCH -->
+      <div class="tool-card" style="grid-column:span 1;">
+        <div class="card-header"><i class="fas fa-paw" style="color:#ffb74d;"></i><h3>🐾 Memory Match - Hewan</h3></div>
+        <div class="card-body">
+          <div class="memory-container">
+            <div class="memory-controls">
+              <select id="mmMode">
+                <option value="1v1ai">1 vs 1 (vs AI)</option>
+                <option value="2v1ai">1 vs 1 vs 1 (2 Player + AI)</option>
+                <option value="3v1ai">1 vs 1 vs 1 vs 1 (3 Player + AI)</option>
+                <option value="1v1">1 vs 1 (Teman)</option>
+                <option value="2v1">1 vs 1 vs 1 (Teman)</option>
+                <option value="3v1">1 vs 1 vs 1 vs 1 (Teman)</option>
+              </select>
+              <button class="btn-tool btn-primary" onclick="mmStartGame()"><i class="fas fa-play"></i> Mulai</button>
+              <button class="btn-tool btn-primary" onclick="mmResetGame()"><i class="fas fa-redo"></i> Reset</button>
+            </div>
+            <div class="memory-status" id="mmStatus">Pilih mode dan klik Mulai</div>
+            <div class="memory-score" id="mmScore"></div>
+            <div class="memory-grid" id="mmGrid"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AUDIO PLAYER -->
+      <div class="tool-card">
+        <div class="card-header"><i class="fas fa-music" style="color:#6bcb77;"></i><h3>Audio Player 🎵</h3></div>
+        <div class="card-body">
+          <div class="audio-player-container">
+            <input type="file" id="audioFileInput" accept="audio/*" />
+            <div class="audio-info">
+              <span id="audioFileName">Belum ada file</span>
+              <span id="audioDuration">Durasi: -</span>
+            </div>
+            <div class="audio-controls">
+              <button class="btn-tool btn-primary" id="playBtn" onclick="togglePlay()"><i class="fas fa-play"></i> Putar</button>
+              <button class="btn-tool btn-primary" onclick="stopAudio()"><i class="fas fa-stop"></i> Stop</button>
+              <div class="audio-progress" id="audioProgress" onclick="seekAudio(event)">
+                <div class="audio-progress-fill" id="audioProgressFill"></div>
+              </div>
+              <span class="audio-time" id="audioTimeLabel">0:00 / 0:00</span>
+            </div>
+            <div class="audio-status" id="audioStatus">Upload file audio untuk mulai</div>
+            <div style="font-size:10px;color:#555;text-align:center;">🎵 Audio tetap berjalan meskipun keluar dari web (background play)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== CHESS (DIPERBAIKI DENGAN HIGHLIGHT) ====== -->
+      <div class="tool-card" style="grid-column:span 1;">
+        <div class="card-header"><i class="fas fa-chess" style="color:#ffd54f;"></i><h3>♚ Catur</h3></div>
+        <div class="card-body">
+          <div class="chess-container">
+            <div class="chess-board" id="chessBoard"></div>
+            <div class="chess-status" id="chessStatus">Klik "Mulai" untuk bermain</div>
+            <div class="chess-controls">
+              <button class="btn-tool btn-primary" onclick="chessStart('ai')"><i class="fas fa-robot"></i> vs AI</button>
+              <button class="btn-tool btn-primary" onclick="chessStart('friend')"><i class="fas fa-users"></i> vs Teman</button>
+              <button class="btn-tool btn-primary" onclick="chessReset()"><i class="fas fa-redo"></i> Reset</button>
+              <button class="btn-tool btn-primary" onclick="chessUndo()" style="flex:0 0 auto;width:auto;"><i class="fas fa-undo"></i> Undo</button>
+            </div>
+            <div style="font-size:10px;color:#555;text-align:center;">🟢 Hijau = langkah valid | 🔴 Merah = bisa menangkap</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TIKTOK -->
+      <div class="tool-card">
+        <div class="card-header"><i class="fab fa-tiktok" style="color:#ee1d52;"></i><h3>TikTok Download</h3></div>
+        <div class="card-body">
+          <input type="text" id="ttLink" placeholder="https://www.tiktok.com/@.../video/..." />
+          <select id="ttType"><option value="video">Video (MP4)</option><option value="audio">Audio (MP3)</option><option value="image">Image (Cover)</option></select>
+          <button class="btn-tool btn-primary" onclick="downloadTikTok()"><i class="fas fa-download"></i> Download</button>
+          <div id="ttResult" class="result-box">⬇️ Masukkan link dan klik Download</div>
+        </div>
+      </div>
+
+      <!-- INSTAGRAM -->
+      <div class="tool-card">
+        <div class="card-header"><i class="fab fa-instagram" style="color:#d62976;"></i><h3>Instagram Download</h3></div>
+        <div class="card-body">
+          <input type="text" id="igLink" placeholder="https://www.instagram.com/p/..." />
+          <select id="igType"><option value="video">Video</option><option value="image">Image</option><option value="audio">Audio (❌)</option></select>
+          <button class="btn-tool btn-primary" onclick="downloadInstagram()"><i class="fas fa-download"></i> Download</button>
+          <div id="igResult" class="result-box">⬇️ Masukkan link dan klik Download</div>
+        </div>
+      </div>
+
+      <!-- YOUTUBE DOWNLOADER -->
+      <div class="tool-card">
+        <div class="card-header"><i class="fab fa-youtube" style="color:#ff0000;"></i><h3>YouTube Download</h3></div>
+        <div class="card-body">
+          <input type="text" id="ytLink" placeholder="https://www.youtube.com/watch?v=..." />
+          <select id="ytType"><option value="video">Video (MP4)</option><option value="audio">Audio (MP3)</option></select>
+          <button class="btn-tool btn-primary" onclick="downloadYoutube()"><i class="fas fa-download"></i> Download</button>
+          <div id="ytResult" class="result-box">⬇️ Masukkan link dan klik Download</div>
+        </div>
+      </div>
+
+      <!-- KALKULATOR -->
+      <div class="tool-card">
+        <div class="card-header"><i class="fas fa-calculator" style="color:#8bc34a;"></i><h3>Kalkulator</h3></div>
+        <div class="card-body">
+          <div class="calc-display" id="calcDisplay">0</div>
+          <div class="calc-grid">
+            <button onclick="calcInput('7')">7</button><button onclick="calcInput('8')">8</button><button onclick="calcInput('9')">9</button><button class="op" onclick="calcInput('+')">+</button>
+            <button onclick="calcInput('4')">4</button><button onclick="calcInput('5')">5</button><button onclick="calcInput('6')">6</button><button class="op" onclick="calcInput('-')">−</button>
+            <button onclick="calcInput('1')">1</button><button onclick="calcInput('2')">2</button><button onclick="calcInput('3')">3</button><button class="op" onclick="calcInput('*')">×</button>
+            <button class="clear" onclick="calcClear()">C</button><button onclick="calcInput('0')">0</button><button onclick="calcInput('.')">.</button><button class="op eq" onclick="calcResult()">=</button>
+            <button style="grid-column:span 1;" class="op" onclick="calcInput('/')">÷</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- REMOVE BG -->
+      <div class="tool-card">
+        <div class="card-header"><i class="fas fa-image" style="color:#64b5f6;"></i><h3>Remove BG</h3></div>
+        <div class="card-body">
+          <div class="upload-area" id="uploadArea" onclick="document.getElementById('bgFile').click()">
+            <i class="fas fa-cloud-upload-alt"></i><span>Klik untuk upload gambar</span>
+            <input type="file" id="bgFile" accept="image/*" onchange="handleBGUpload(event)" />
+          </div>
+          <button class="btn-tool btn-primary" onclick="removeBG()"><i class="fas fa-magic"></i> Hapus Background</button>
+          <div id="bgResult" class="result-box">📤 Upload gambar dan klik hapus</div>
+        </div>
+      </div>
+
+      <!-- TANYA USTADZ -->
+      <div class="tool-card">
+        <div class="card-header"><i class="fas fa-mosque" style="color:#c8a86c;"></i><h3>Tanya Pak Ustadz</h3></div>
+        <div class="card-body">
+          <input type="text" id="ustadzQuestion" placeholder="Tanyakan soal agama..." />
+          <button class="btn-tool btn-primary" onclick="askUstadz()"><i class="fas fa-comment"></i> Tanya</button>
+          <div class="ustadz-answer" id="ustadzAnswer">Klik Tanya untuk jawaban</div>
+        </div>
+      </div>
+
+      <!-- SPAM OTP -->
+      <div class="tool-card">
+        <div class="card-header"><i class="fab fa-whatsapp" style="color:#25d366;"></i><h3>Spam OTP WA</h3></div>
+        <div class="card-body">
+          <input type="text" id="spamNumber" placeholder="Masukkan nomor WA (contoh: 62812...)" />
+          <button class="btn-tool btn-primary" onclick="spamOTP()"><i class="fas fa-bolt"></i> Spam OTP</button>
+          <div class="spam-log" id="spamLog">Siap mengirim OTP...</div>
+          <div style="font-size:10px;color:#555;margin-top:4px;">⚠️ Hanya simulasi untuk hiburan.</div>
+        </div>
+      </div>
+
+      <!-- ACAK DADU -->
+      <div class="tool-card">
+        <div class="card-header"><i class="fas fa-dice" style="color:#ffb74d;"></i><h3>Acak Dadu</h3></div>
+        <div class="card-body">
+          <div class="dice-area">
+            <div class="dice-box" id="diceBox">⚀</div>
+            <div class="dice-result" id="diceResult">Klik lempar</div>
+            <button class="btn-tool btn-primary" onclick="rollDice()"><i class="fas fa-random"></i> Lempar Dadu</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- UPLOAD FILE -->
+      <div class="tool-card">
+        <div class="card-header"><i class="fas fa-cloud-upload-alt" style="color:#ffb74d;"></i><h3>Upload File to URL</h3></div>
+        <div class="card-body">
+          <input type="file" id="uploadFileInput" />
+          <select id="uploadHost">
+            <option value="0x0">0x0.st (CORS, max 512MB)</option>
+            <option value="anonfiles">AnonFiles (CORS, max 20GB)</option>
+            <option value="catbox">Catbox (via proxy, max 200MB)</option>
+            <option value="litterbox">Litterbox (via proxy, 24h)</option>
+            <option value="mediafire">Mediafire (buka halaman upload)</option>
+          </select>
+          <button class="btn-tool btn-primary" onclick="uploadFile()"><i class="fas fa-upload"></i> Upload</button>
+          <div id="uploadResult" class="result-box">📁 Pilih file dan klik Upload</div>
+        </div>
+      </div>
+
+      <!-- WINDOWS QUOTES -->
+      <div class="tool-card">
+        <div class="card-header"><i class="fab fa-windows" style="color:#0078d7;"></i><h3>Windows Quotes</h3></div>
+        <div class="card-body">
+          <input type="text" id="winQuoteInput" placeholder="Tulis kutipan atau pesan..." />
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn-tool btn-primary" onclick="updateWinQuote()" style="flex:1;"><i class="fas fa-pen"></i> Tampilkan</button>
+            <button class="btn-tool btn-primary" onclick="downloadWinQuote()" style="flex:1;"><i class="fas fa-download"></i> Download</button>
+          </div>
+          <div id="winQuoteDisplay" style="margin-top:10px; display:flex; justify-content:center;">
+            <div id="winNotification" class="win-notif">
+              <div class="header"><i class="fab fa-windows"></i><span>Windows Quotes</span></div>
+              <div id="winQuoteText" class="content">Klik "Tampilkan" untuk melihat kutipan</div>
+              <div class="actions"><button>OK</button><button>Batal</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI RYANZ -->
+      <div class="tool-card">
+        <div class="card-header"><i class="fas fa-robot" style="color:#9c27b0;"></i><h3>AI Ryanz</h3></div>
+        <div class="card-body">
+          <input type="text" id="aiApiKey" placeholder="API Key Gemini (opsional)" />
+          <input type="text" id="aiQuestion" placeholder="Tanya apa saja..." />
+          <button class="btn-tool btn-primary" onclick="askAI()"><i class="fas fa-comment-dots"></i> Tanya AI</button>
+          <div id="aiAnswer" class="result-box" style="min-height:70px;">💡 Ketik pertanyaan dan klik Tanya AI</div>
+          <div style="font-size:10px;color:#555;margin-top:4px;">Tanpa API Key, AI akan menjawab dengan logika pintar</div>
+        </div>
+      </div>
+
+      <!-- SLOT ANGKA -->
+      <div class="tool-card">
+        <div class="card-header"><i class="fas fa-sliders-h" style="color:#ffb74d;"></i><h3>Slot Angka</h3></div>
+        <div class="card-body">
+          <div class="slot-container">
+            <div class="slot-reels">
+              <div class="slot-reel" id="reel1">1</div>
+              <div class="slot-reel" id="reel2">2</div>
+              <div class="slot-reel" id="reel3">3</div>
+            </div>
+            <button class="btn-tool btn-primary" onclick="spinSlot()"><i class="fas fa-arrow-right"></i> Putar!</button>
+            <div class="slot-result" id="slotResult">Klik Putar!</div>
+            <div class="slot-credit" id="slotCredit">💰 Kredit: 1000</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLOT BAMBU -->
+      <div class="tool-card" style="border-left:4px solid #4caf50;">
+        <div class="card-header"><i class="fas fa-dragon" style="color:#4caf50;"></i><h3>Slot Bambu 🎋</h3></div>
+        <div class="card-body">
+          <div class="slot-container">
+            <div class="slot-reels mahjong-reels">
+              <div class="slot-reel mahjong-reel" id="m1">🎋</div>
+              <div class="slot-reel mahjong-reel" id="m2">🎍</div>
+              <div class="slot-reel mahjong-reel" id="m3">🌸</div>
+            </div>
+            <button class="btn-tool btn-primary" onclick="spinMahjong()"><i class="fas fa-arrow-right"></i> Putar Bambu!</button>
+            <div class="slot-result" id="mahjongResult">Klik Putar!</div>
+            <div class="slot-credit" id="mahjongCredit">💰 Kredit: 1000</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BLOCK BLAST -->
+      <div class="tool-card" style="grid-column:span 1;">
+        <div class="card-header"><i class="fas fa-th" style="color:#ff6b6b;"></i><h3>Block Blast 🧱</h3></div>
+        <div class="card-body">
+          <div class="bb-container">
+            <div class="bb-score" id="bbScore">0</div>
+            <div class="bb-grid" id="bbGrid"></div>
+            <div class="bb-pieces" id="bbPieces"></div>
+            <button class="btn-tool btn-primary" onclick="bbResetGame()"><i class="fas fa-redo"></i> Reset Game</button>
+            <div style="font-size:11px;color:#666;text-align:center;">👆 Geser blok ke grid (drag & drop). Blok baru muncul otomatis setelah 3 blok habis!</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end tools-grid -->
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <div class="brand">TOOLS RYANZ</div>
+      <div class="sub">HANYA UNTUK BERSENANG-SENANG</div>
+      <div class="version">VERSION 1.0</div>
+    </div>
+  </div><!-- end app-container -->
+
+  <script>
+    // ============================================================
+    // 0. AUTH SYSTEM + ROCKET ANIMATION
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+      const authScreen = document.getElementById('authScreen');
+      const appWrapper = document.getElementById('appWrapper');
+      const registerForm = document.getElementById('registerForm');
+      const loginForm = document.getElementById('loginForm');
+      const authSub = document.getElementById('authSub');
+
+      const regUsername = document.getElementById('regUsername');
+      const regPassword = document.getElementById('regPassword');
+      const regConfirm = document.getElementById('regConfirm');
+      const registerBtn = document.getElementById('registerBtn');
+
+      const loginUsername = document.getElementById('loginUsername');
+      const loginPassword = document.getElementById('loginPassword');
+      const loginBtn = document.getElementById('loginBtn');
+
+      const switchToLogin = document.getElementById('switchToLogin');
+      const switchToRegister = document.getElementById('switchToRegister');
+
+      const authError = document.getElementById('authError');
+      const authSuccess = document.getElementById('authSuccess');
+      const loginError = document.getElementById('loginError');
+      const loginSuccess = document.getElementById('loginSuccess');
+
+      function getUsers() {
+        try { return JSON.parse(localStorage.getItem('users')) || []; } catch { return []; }
+      }
+      function saveUsers(users) { localStorage.setItem('users', JSON.stringify(users)); }
+
+      function showLogin() {
+        registerForm.style.display = 'none';
+        loginForm.style.display = 'block';
+        authSub.textContent = 'Masuk ke akun Anda';
+        authError.textContent = '';
+        authSuccess.textContent = '';
+        loginError.textContent = '';
+        loginSuccess.textContent = '';
+      }
+
+      function showRegister() {
+        registerForm.style.display = 'block';
+        loginForm.style.display = 'none';
+        authSub.textContent = 'Daftar untuk memulai';
+        authError.textContent = '';
+        authSuccess.textContent = '';
+        loginError.textContent = '';
+        loginSuccess.textContent = '';
+      }
+
+      switchToLogin.addEventListener('click', showLogin);
+      switchToRegister.addEventListener('click', showRegister);
+
+      registerBtn.addEventListener('click', function() {
+        const username = regUsername.value.trim();
+        const password = regPassword.value.trim();
+        const confirm = regConfirm.value.trim();
+        authError.textContent = '';
+        authSuccess.textContent = '';
+        if (!username || !password || !confirm) { authError.textContent = '❌ Semua field harus diisi!'; return; }
+        if (username.length < 3) { authError.textContent = '❌ Username minimal 3 karakter.'; return; }
+        if (password.length < 4) { authError.textContent = '❌ Password minimal 4 karakter.'; return; }
+        if (password !== confirm) { authError.textContent = '❌ Password dan konfirmasi tidak sama.'; return; }
+        const users = getUsers();
+        if (users.find(u => u.username === username)) { authError.textContent = '❌ Username sudah digunakan.'; return; }
+        users.push({ username, password });
+        saveUsers(users);
+        authSuccess.textContent = '✅ Pendaftaran berhasil! Silakan masuk.';
+        regUsername.value = '';
+        regPassword.value = '';
+        regConfirm.value = '';
+        setTimeout(() => {
+          showLogin();
+          loginUsername.value = username;
+          loginPassword.value = '';
+          loginSuccess.textContent = 'Akun siap digunakan. Silakan masuk.';
+        }, 1500);
+      });
+
+      loginBtn.addEventListener('click', function() {
+        const username = loginUsername.value.trim();
+        const password = loginPassword.value.trim();
+        loginError.textContent = '';
+        loginSuccess.textContent = '';
+        if (!username || !password) { loginError.textContent = '❌ Masukkan username dan password!'; return; }
+        const users = getUsers();
+        const user = users.find(u => u.username === username && u.password === password);
+        if (!user) { loginError.textContent = '❌ Username atau password salah.'; return; }
+        loginSuccess.textContent = '✅ Selamat datang, ' + username + '!';
+        authScreen.classList.add('hidden');
+        appWrapper.style.display = 'block';
+        localStorage.setItem('chatUsername', username);
+        startRocketAnimation();
+        setTimeout(initChat, 1500);
+        setTimeout(chessInit, 2000);
+      });
+
+      regPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') registerBtn.click(); });
+      regConfirm.addEventListener('keydown', (e) => { if (e.key === 'Enter') registerBtn.click(); });
+      loginPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginBtn.click(); });
+
+      if (getUsers().length > 0) showLogin();
+      else showRegister();
+    });
+
+    // ============================================================
+    // ROCKET ANIMATION
+    // ============================================================
+    function startRocketAnimation() {
+      const canvas = document.getElementById('rocketCanvas');
+      const ctx = canvas.getContext('2d');
+      let W, H;
+      let rocket = { x: 0, y: 0, size: 45, angle: -Math.PI / 2 };
+      let particles = [];
+      let stars = [];
+      let frame = 0;
+      let animationRunning = true;
+      let textAlpha = 0;
+      let textY = 0;
+
+      function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+        rocket.x = W / 2;
+        rocket.y = H - 100;
+        stars = [];
+        for (let i = 0; i < 200; i++) {
+          stars.push({ x: Math.random() * W, y: Math.random() * H, r: 0.5 + Math.random() * 2, a: 0.2 + Math.random() * 0.8 });
+        }
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      function drawRocket(x, y, size, angle) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+        ctx.shadowColor = 'rgba(255,200,50,0.3)';
+        ctx.shadowBlur = 30;
+        const grad = ctx.createLinearGradient(-size / 2, 0, size / 2, 0);
+        grad.addColorStop(0, '#ff5722');
+        grad.addColorStop(0.5, '#ff9800');
+        grad.addColorStop(1, '#ff5722');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, size / 2, size / 1.5, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#e53935';
+        ctx.beginPath();
+        ctx.moveTo(0, -size / 1.2);
+        ctx.lineTo(-size / 2.5, -size / 6);
+        ctx.lineTo(size / 2.5, -size / 6);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = '#ff7043';
+        ctx.beginPath();
+        ctx.moveTo(-size / 2, size / 4);
+        ctx.lineTo(-size / 1.2, size / 2);
+        ctx.lineTo(-size / 2, size / 2.5);
+        ctx.closePath();
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(size / 2, size / 4);
+        ctx.lineTo(size / 1.2, size / 2);
+        ctx.lineTo(size / 2, size / 2.5);
+        ctx.closePath();
+        ctx.fill();
+        ctx.shadowBlur = 10;
+        ctx.fillStyle = 'rgba(100,200,255,0.8)';
+        ctx.beginPath();
+        ctx.arc(0, -size / 8, size / 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
+        ctx.beginPath();
+        ctx.arc(-size / 12, -size / 8 - size / 12, size / 12, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 40;
+        ctx.shadowColor = 'rgba(255,150,0,0.6)';
+        const flameLen = size / 1.2 + Math.random() * size / 1.5;
+        const grad2 = ctx.createLinearGradient(0, size / 2, 0, size / 2 + flameLen);
+        grad2.addColorStop(0, 'rgba(255,200,50,0.9)');
+        grad2.addColorStop(0.4, 'rgba(255,100,0,0.7)');
+        grad2.addColorStop(1, 'rgba(255,50,0,0)');
+        ctx.fillStyle = grad2;
+        ctx.beginPath();
+        ctx.moveTo(-size / 3, size / 1.8);
+        ctx.quadraticCurveTo(-size / 4, size / 1.8 + flameLen, 0, size / 1.8 + flameLen * 0.9);
+        ctx.quadraticCurveTo(size / 4, size / 1.8 + flameLen, size / 3, size / 1.8);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function createParticles(x, y, count) {
+        for (let i = 0; i < count; i++) {
+          const angle = -Math.PI / 2 + (Math.random() - 0.5) * 0.8;
+          const speed = 2 + Math.random() * 6;
+          particles.push({
+            x: x + (Math.random() - 0.5) * 30,
+            y: y + 20,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed + 1,
+            life: 1,
+            decay: 0.008 + Math.random() * 0.015,
+            size: 3 + Math.random() * 6,
+            color: ['#ff5722', '#ff9800', '#ffc107', '#ffeb3b', '#ff7043'][Math.floor(Math.random() * 5)]
+          });
+        }
+      }
+
+      function animateRocket() {
+        if (!animationRunning) return;
+        ctx.clearRect(0, 0, W, H);
+
+        stars.forEach(s => { ctx.globalAlpha = s.a;
+          ctx.fillStyle = '#fff';
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fill(); });
+        ctx.globalAlpha = 1;
+
+        if (rocket.y > 120) {
+          rocket.y -= 2.2;
+          if (frame % 2 === 0) createParticles(rocket.x, rocket.y + 35, 8);
+          if (textAlpha < 1) textAlpha += 0.015;
+          textY = rocket.y - 80;
+        } else {
+          animationRunning = false;
+          setTimeout(() => {
+            ctx.clearRect(0, 0, W, H);
+            canvas.style.display = 'none';
+          }, 2000);
+        }
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.1;
+          p.life -= p.decay;
+          if (p.life <= 0) particles.splice(i, 1);
+        }
+        particles.forEach(p => {
+          ctx.globalAlpha = p.life * 0.8;
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+
+        drawRocket(rocket.x, rocket.y, rocket.size, rocket.angle);
+
+        if (textAlpha > 0.05) {
+          ctx.globalAlpha = Math.min(textAlpha, 1);
+          ctx.shadowColor = 'rgba(255,200,50,0.5)';
+          ctx.shadowBlur = 30;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          ctx.font = 'bold 42px Poppins, sans-serif';
+          const gradText = ctx.createLinearGradient(0, textY - 20, 0, textY + 20);
+          gradText.addColorStop(0, '#ffd54f');
+          gradText.addColorStop(1, '#ff9800');
+          ctx.fillStyle = gradText;
+          ctx.fillText('🚀 SELAMAT DATANG YA CUY!', W / 2, textY);
+          ctx.shadowBlur = 0;
+          ctx.globalAlpha = 1;
+        }
+
+        frame++;
+        requestAnimationFrame(animateRocket);
+      }
+      animateRocket();
+      setTimeout(() => {
+        animationRunning = false;
+        ctx.clearRect(0, 0, W, H);
+        canvas.style.display = 'none';
+      }, 8000);
+    }
+
+
+    // ============================================================
+    // 1. CHAT ROOM
+    // ============================================================
+    let chatChannel = null;
+
+    function initChat() {
+      const username = localStorage.getItem('chatUsername') || 'Anonymous';
+      try {
+        chatChannel = new BroadcastChannel('chat-ryanz');
+        chatChannel.onmessage = (event) => {
+          const data = event.data;
+          if (data.type === 'message') {
+            displayMessage(data.username, data.text, data.time);
+          }
+        };
+        setTimeout(() => {
+          document.getElementById('chatUserCount').textContent = '2 online';
+        }, 500);
+      } catch (e) {
+        console.log('BroadcastChannel tidak didukung');
+      }
+      loadChatHistory();
+      document.getElementById('chatInput').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') sendMessage();
+      });
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+      const username = localStorage.getItem('chatUsername') || 'Anonymous';
+      const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+      const msgData = { username, text, time, id: Date.now() + '_' + Math.random() };
+      const messages = JSON.parse(localStorage.getItem('chatMessages') || '[]');
+      messages.push(msgData);
+      if (messages.length > 100) messages.shift();
+      localStorage.setItem('chatMessages', JSON.stringify(messages));
+      if (chatChannel) {
+        chatChannel.postMessage({ type: 'message', ...msgData });
+      }
+      displayMessage(username, text, time);
+      input.value = '';
+      scrollChatToBottom();
+    }
+
+    function displayMessage(username, text, time) {
+      const container = document.getElementById('chatMessages');
+      const currentUser = localStorage.getItem('chatUsername') || 'Anonymous';
+      const isOwn = username === currentUser;
+      const div = document.createElement('div');
+      div.className = `chat-message ${isOwn ? 'own' : 'other'}`;
+      div.innerHTML = `
+        <span class="msg-username">${username} <span class="msg-time">${time}</span></span>
+        <div class="msg-text">${escapeHtml(text)}</div>
+      `;
+      container.appendChild(div);
+      scrollChatToBottom();
+    }
+
+    function loadChatHistory() {
+      const container = document.getElementById('chatMessages');
+      const messages = JSON.parse(localStorage.getItem('chatMessages') || '[]');
+      const currentUser = localStorage.getItem('chatUsername') || 'Anonymous';
+      container.innerHTML = '';
+      messages.forEach(msg => {
+        const isOwn = msg.username === currentUser;
+        const div = document.createElement('div');
+        div.className = `chat-message ${isOwn ? 'own' : 'other'}`;
+        div.innerHTML = `
+          <span class="msg-username">${msg.username} <span class="msg-time">${msg.time || '--:--'}</span></span>
+          <div class="msg-text">${escapeHtml(msg.text)}</div>
+        `;
+        container.appendChild(div);
+      });
+      scrollChatToBottom();
+    }
+
+    function scrollChatToBottom() {
+      const container = document.getElementById('chatMessages');
+      setTimeout(() => { container.scrollTop = container.scrollHeight; }, 50);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+
+    // ============================================================
+    // 2. DEVICE INFO + BATTERY
+    // ============================================================
+    (function deviceInfo() {
+      const ua = navigator.userAgent;
+      let browser = 'Unknown';
+      if (ua.includes('Chrome') && !ua.includes('Edg')) browser = 'Chrome';
+      else if (ua.includes('Firefox')) browser = 'Firefox';
+      else if (ua.includes('Safari') && !ua.includes('Chrome')) browser = 'Safari';
+      else if (ua.includes('Edg')) browser = 'Edge';
+      else if (ua.includes('Opera') || ua.includes('OPR')) browser = 'Opera';
+      document.getElementById('deviceBrowser').textContent = browser;
+
+      let os = 'Unknown';
+      if (ua.includes('Windows')) os = 'Windows';
+      else if (ua.includes('Mac OS')) os = 'macOS';
+      else if (ua.includes('Android')) os = 'Android';
+      else if (ua.includes('iOS') || ua.includes('iPhone') || ua.includes('iPad')) os = 'iOS';
+      else if (ua.includes('Linux')) os = 'Linux';
+      document.getElementById('deviceOS').textContent = os;
+
+      const w = window.innerWidth || screen.width;
+      const h = window.innerHeight || screen.height;
+      document.getElementById('deviceScreen').textContent = w + '×' + h;
+
+      function updateBatteryUI(level, charging) {
+        const levelEl = document.getElementById('batteryLevel');
+        const iconEl = document.getElementById('batteryIcon');
+        levelEl.textContent = level + '%';
+        if (level <= 20) {
+          iconEl.className = 'battery-icon low';
+          iconEl.innerHTML = '<i class="fas fa-battery-quarter"></i>';
+        } else if (level <= 50) {
+          iconEl.className = 'battery-icon medium';
+          iconEl.innerHTML = '<i class="fas fa-battery-half"></i>';
+        } else {
+          iconEl.className = 'battery-icon high';
+          iconEl.innerHTML = '<i class="fas fa-battery-three-quarters"></i>';
+        }
+        if (charging) {
+          iconEl.innerHTML += ' <i class="fas fa-bolt" style="color:#ffd54f;font-size:11px;"></i>';
+        }
+      }
+
+      if ('getBattery' in navigator) {
+        navigator.getBattery().then(bat => {
+          function updateBattery() {
+            const level = Math.round(bat.level * 100);
+            updateBatteryUI(level, bat.charging);
+          }
+          updateBattery();
+          bat.addEventListener('levelchange', updateBattery);
+          bat.addEventListener('chargingchange', updateBattery);
+          setInterval(updateBattery, 5000);
+        }).catch(() => {
+          document.getElementById('batteryLevel').textContent = 'N/A';
+        });
+      } else {
+        document.getElementById('batteryLevel').textContent = 'N/A';
+      }
+
+      function updateNetworkInfo() {
+        const onlineEl = document.getElementById('onlineStatus');
+        const wifiStatus = document.getElementById('wifiStatus');
+        const wifiName = document.getElementById('wifiName');
+        if (navigator.onLine) { onlineEl.textContent = 'Online';
+          onlineEl.style.color = '#81c784'; } else { onlineEl.textContent = 'Offline';
+          onlineEl.style.color = '#ef9a9a'; }
+        if (navigator.connection) {
+          const type = navigator.connection.effectiveType || navigator.connection.type || 'unknown';
+          if (type === 'wifi' || type === 'ethernet') {
+            wifiStatus.textContent = 'On';
+            wifiStatus.style.color = '#81c784';
+            wifiName.textContent = '📶 (Nama tidak tersedia)';
+          } else if (type === 'cellular') {
+            wifiStatus.textContent = 'Off (Cellular)';
+            wifiStatus.style.color = '#ffcc80';
+            wifiName.textContent = '';
+          } else {
+            wifiStatus.textContent = 'Off';
+            wifiStatus.style.color = '#ef9a9a';
+            wifiName.textContent = '';
+          }
+        } else {
+          wifiStatus.textContent = 'On (estimasi)';
+          wifiStatus.style.color = '#81c784';
+          wifiName.textContent = '📶 (Nama tidak tersedia)';
+        }
+      }
+      updateNetworkInfo();
+      window.addEventListener('online', updateNetworkInfo);
+      window.addEventListener('offline', updateNetworkInfo);
+      if (navigator.connection) {
+        navigator.connection.addEventListener('change', updateNetworkInfo);
+      }
+    })();
+
+
+    // ============================================================
+    // 3. MEMORY MATCH
+    // ============================================================
+    const mmAnimals = [
+      '🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯',
+      '🦁','🐮','🐷','🐸','🐵','🐔','🐧','🐦','🐤','🐣',
+      '🦄','🐴','🦓','🐺','🦝','🐙','🦑','🦐','🦀','🐡',
+      '🐠','🐟','🐬','🐳','🐋','🦈','🐊','🐅','🐆','🦒',
+      '🦏','🐘','🐃','🐄','🐏','🐑','🐐','🐪','🐫','🦙'
+    ];
+
+    let mm = {
+      cards: [],
+      flipped: [],
+      matched: 0,
+      selected: [],
+      score: [0,0,0,0],
+      currentPlayer: 0,
+      totalPlayers: 2,
+      mode: '1v1',
+      gameOver: false,
+      isAI: false,
+      aiPlayers: 0,
+      waitingForAI: false,
+      lockBoard: false
+    };
+
+    function mmStartGame() {
+      const mode = document.getElementById('mmMode').value;
+      mm.mode = mode;
+      mm.aiPlayers = 0;
+      mm.totalPlayers = 2;
+      
+      if (mode === '1v1ai') { mm.totalPlayers = 2; mm.aiPlayers = 1; mm.isAI = true; }
+      else if (mode === '2v1ai') { mm.totalPlayers = 3; mm.aiPlayers = 1; mm.isAI = true; }
+      else if (mode === '3v1ai') { mm.totalPlayers = 4; mm.aiPlayers = 1; mm.isAI = true; }
+      else if (mode === '1v1') { mm.totalPlayers = 2; mm.aiPlayers = 0; mm.isAI = false; }
+      else if (mode === '2v1') { mm.totalPlayers = 3; mm.aiPlayers = 0; mm.isAI = false; }
+      else if (mode === '3v1') { mm.totalPlayers = 4; mm.aiPlayers = 0; mm.isAI = false; }
+      
+      mm.score = Array(mm.totalPlayers).fill(0);
+      mm.currentPlayer = 0;
+      mm.gameOver = false;
+      mm.matched = 0;
+      mm.flipped = [];
+      mm.selected = [];
+      mm.lockBoard = false;
+      mm.waitingForAI = false;
+      
+      mmGenerateCards();
+      mmRenderGrid();
+      mmUpdateScore();
+      mmUpdateStatus('Game dimulai! Giliran Pemain ' + (mm.currentPlayer + 1));
+    }
+
+    function mmResetGame() {
+      mm.gameOver = true;
+      mm.flipped = [];
+      mm.selected = [];
+      mm.lockBoard = true;
+      mmRenderGrid();
+      mmUpdateStatus('Game di-reset. Klik Mulai untuk bermain.');
+    }
+
+    function mmGenerateCards() {
+      const shuffledAnimals = [...mmAnimals].sort(() => Math.random() - 0.5);
+      const selectedAnimals = shuffledAnimals.slice(0, 25);
+      
+      let cards = [];
+      selectedAnimals.forEach(animal => {
+        cards.push({ id: animal, emoji: animal, matched: false });
+        cards.push({ id: animal, emoji: animal, matched: false });
+      });
+      
+      cards = cards.sort(() => Math.random() - 0.5);
+      
+      mm.cards = cards.map((card, index) => ({
+        ...card,
+        index: index,
+        flipped: false,
+        matched: false
+      }));
+      mm.matched = 0;
+    }
+
+    function mmRenderGrid() {
+      const grid = document.getElementById('mmGrid');
+      grid.innerHTML = '';
+      mm.cards.forEach((card, index) => {
+        const div = document.createElement('div');
+        div.className = 'memory-card';
+        if (card.flipped || card.matched) {
+          div.classList.add('flipped');
+          div.textContent = card.emoji;
+        }
+        if (card.matched) {
+          div.classList.add('matched');
+        }
+        if (mm.selected.includes(index)) {
+          div.classList.add('selected');
+        }
+        div.dataset.index = index;
+        div.addEventListener('click', () => mmClickCard(index));
+        div.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          mmClickCard(index);
+        }, { passive: false });
+        grid.appendChild(div);
+      });
+    }
+
+    function mmClickCard(index) {
+      if (mm.gameOver || mm.lockBoard || mm.waitingForAI) return;
+      const card = mm.cards[index];
+      if (card.flipped || card.matched) return;
+      if (mm.selected.length >= 2) return;
+      
+      if (mm.isAI && mm.currentPlayer >= mm.totalPlayers - mm.aiPlayers) {
+        return;
+      }
+      
+      card.flipped = true;
+      mm.selected.push(index);
+      mmRenderGrid();
+      
+      if (mm.selected.length === 2) {
+        mm.lockBoard = true;
+        setTimeout(() => mmCheckMatch(), 600);
+      }
+    }
+
+    function mmCheckMatch() {
+      const indices = mm.selected;
+      const cards = indices.map(i => mm.cards[i]);
+      const allSame = cards.every(c => c.id === cards[0].id);
+      
+      if (allSame) {
+        cards.forEach(c => c.matched = true);
+        mm.matched += 2;
+        mm.score[mm.currentPlayer] += 10;
+        mm.selected = [];
+        mmUpdateScore();
+        mmUpdateStatus('✅ Match! Pemain ' + (mm.currentPlayer + 1) + ' dapat 10 poin!');
+        mmRenderGrid();
+        mm.lockBoard = false;
+        
+        if (mm.matched >= 50) {
+          mm.gameOver = true;
+          const winner = mm.score.indexOf(Math.max(...mm.score));
+          mmUpdateStatus('🏆 Game Selesai! Pemenang: Pemain ' + (winner + 1) + ' dengan ' + mm.score[winner] + ' poin!');
+          return;
+        }
+        mmNextTurn();
+      } else {
+        cards.forEach(c => c.flipped = false);
+        mm.selected = [];
+        mmRenderGrid();
+        mm.lockBoard = false;
+        mm.currentPlayer = (mm.currentPlayer + 1) % mm.totalPlayers;
+        mmUpdateStatus('❌ Tidak match! Giliran Pemain ' + (mm.currentPlayer + 1));
+        mmRenderGrid();
+        mmNextTurn();
+      }
+    }
+
+    function mmNextTurn() {
+      if (mm.isAI && mm.currentPlayer >= mm.totalPlayers - mm.aiPlayers && !mm.gameOver) {
+        mm.waitingForAI = true;
+        mmUpdateStatus('🤖 AI (Pemain ' + (mm.currentPlayer + 1) + ') berpikir...');
+        setTimeout(() => mmAIPlay(), 800);
+      }
+    }
+
+    function mmAIPlay() {
+      if (mm.gameOver) { mm.waitingForAI = false; return; }
+      
+      const available = mm.cards.filter(c => !c.flipped && !c.matched);
+      if (available.length < 2) {
+        mm.waitingForAI = false;
+        return;
+      }
+      
+      const groups = {};
+      available.forEach(c => {
+        if (!groups[c.id]) groups[c.id] = [];
+        groups[c.id].push(c);
+      });
+      
+      let selectedIndices = [];
+      for (const [id, cards] of Object.entries(groups)) {
+        if (cards.length >= 2) {
+          selectedIndices = cards.slice(0, 2).map(c => c.index);
+          break;
+        }
+      }
+      
+      if (selectedIndices.length === 0) {
+        const shuffled = available.sort(() => Math.random() - 0.5);
+        selectedIndices = shuffled.slice(0, 2).map(c => c.index);
+      }
+      
+      selectedIndices.forEach(i => mm.cards[i].flipped = true);
+      mm.selected = selectedIndices;
+      mmRenderGrid();
+      mm.lockBoard = true;
+      
+      setTimeout(() => {
+        const cards = selectedIndices.map(i => mm.cards[i]);
+        const allSame = cards.every(c => c.id === cards[0].id);
+        
+        if (allSame) {
+          cards.forEach(c => c.matched = true);
+          mm.matched += 2;
+          mm.score[mm.currentPlayer] += 10;
+          mm.selected = [];
+          mmUpdateScore();
+          mmUpdateStatus('🤖 AI (Pemain ' + (mm.currentPlayer + 1) + ') dapat 10 poin!');
+          mmRenderGrid();
+          mm.lockBoard = false;
+          mm.waitingForAI = false;
+          
+          if (mm.matched >= 50) {
+            mm.gameOver = true;
+            const winner = mm.score.indexOf(Math.max(...mm.score));
+            mmUpdateStatus('🏆 Game Selesai! Pemenang: Pemain ' + (winner + 1) + ' dengan ' + mm.score[winner] + ' poin!');
+            return;
+          }
+          setTimeout(() => mmAIPlay(), 600);
+        } else {
+          cards.forEach(c => c.flipped = false);
+          mm.selected = [];
+          mmRenderGrid();
+          mm.lockBoard = false;
+          mm.waitingForAI = false;
+          mm.currentPlayer = (mm.currentPlayer + 1) % mm.totalPlayers;
+          mmUpdateStatus('❌ AI gagal! Giliran Pemain ' + (mm.currentPlayer + 1));
+          mmRenderGrid();
+          mmNextTurn();
+        }
+      }, 700);
+    }
+
+    function mmUpdateScore() {
+      const container = document.getElementById('mmScore');
+      container.innerHTML = '';
+      for (let i = 0; i < mm.totalPlayers; i++) {
+        const label = (mm.isAI && i >= mm.totalPlayers - mm.aiPlayers) ? '🤖 AI' : '👤 P' + (i + 1);
+        const div = document.createElement('div');
+        div.className = 'score-item';
+        div.innerHTML = label + ' <span>' + mm.score[i] + '</span>';
+        if (i === mm.currentPlayer && !mm.gameOver) {
+          div.style.border = '2px solid #ffd54f';
+          div.style.borderRadius = '8px';
+          div.style.padding = '2px 8px';
+        }
+        container.appendChild(div);
+      }
+    }
+
+    function mmUpdateStatus(msg) {
+      document.getElementById('mmStatus').textContent = msg;
+    }
+
+
+    // ============================================================
+    // 4. TIKTOK, INSTAGRAM, YOUTUBE, DLL
+    // ============================================================
+    function downloadTikTok() {
+      const link = document.getElementById('ttLink').value.trim();
+      const type = document.getElementById('ttType').value;
+      const result = document.getElementById('ttResult');
+      if (!link) { result.textContent = '⚠️ Masukkan link TikTok!'; return; }
+      result.textContent = '⏳ Mengambil data...';
+      fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(link)}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.code !== 0) throw new Error(data.msg || 'Gagal');
+          const media = data.data;
+          let html = '';
+          if (type === 'video') {
+            const url = media.play || media.wmplay || media.hdplay;
+            if (url) html += `<a class="file-link" href="${url}" target="_blank">📹 Download Video (MP4)</a>`;
+            else html += '⚠️ Video tidak ditemukan';
+          } else if (type === 'audio') {
+            const url = media.music || media.music_info?.play || '';
+            if (url) html += `<a class="file-link" href="${url}" target="_blank">🎵 Download Audio (MP3)</a>`;
+            else html += '⚠️ Audio tidak ditemukan';
+          } else if (type === 'image') {
+            const url = media.cover || '';
+            if (url) html += `<a class="file-link" href="${url}" target="_blank">🖼️ Download Cover</a>`;
+            else html += '⚠️ Cover tidak ditemukan';
+          }
+          html += `<div style="font-size:10px;color:#666;margin-top:4px;">${media.desc || ''}</div>`;
+          result.innerHTML = html || '⚠️ Tidak ada media yang tersedia';
+        })
+        .catch(err => { result.textContent = '❌ Error: ' + err.message; });
+    }
+
+    function downloadInstagram() {
+      const link = document.getElementById('igLink').value.trim();
+      const type = document.getElementById('igType').value;
+      const result = document.getElementById('igResult');
+      if (!link) { result.textContent = '⚠️ Masukkan link Instagram!'; return; }
+      const shortcode = link.match(/\/p\/([A-Za-z0-9_-]+)/)?.[1];
+      if (!shortcode) { result.textContent = '⚠️ Link tidak valid.'; return; }
+      result.textContent = '⏳ Mengambil data...';
+      const proxy = 'https://corsproxy.io/?url=';
+      fetch(proxy + encodeURIComponent(`https://www.instagram.com/p/${shortcode}/?__a=1`))
+        .then(r => { if (!r.ok) throw new Error('Gagal fetch'); return r.json(); })
+        .then(data => {
+          const media = data.graphql?.shortcode_media;
+          if (!media) throw new Error('Media tidak ditemukan');
+          let html = '';
+          if (type === 'video' && media.is_video) {
+            const url = media.video_url;
+            if (url) html += `<a class="file-link" href="${url}" target="_blank">🎬 Download Video (MP4)</a>`;
+            else html += '⚠️ Video URL tidak tersedia';
+          } else if (type === 'image') {
+            const url = media.display_url || media.display_src;
+            if (url) html += `<a class="file-link" href="${url}" target="_blank">🖼️ Download Image</a>`;
+            else html += '⚠️ Image tidak ditemukan';
+          } else if (type === 'video' && !media.is_video) {
+            html += '⚠️ Ini bukan video, pilih Image';
+          } else {
+            html += '⚠️ Tipe tidak didukung';
+          }
+          result.innerHTML = html || '⚠️ Tidak ada media';
+        })
+        .catch(err => { result.textContent = '❌ Error: ' + err.message; });
+    }
+
+    function downloadYoutube() {
+      const link = document.getElementById('ytLink').value.trim();
+      const type = document.getElementById('ytType').value;
+      const result = document.getElementById('ytResult');
+      if (!link) { result.textContent = '⚠️ Masukkan link YouTube!'; return; }
+      const videoId = link.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)?.[1];
+      if (!videoId) { result.textContent = '⚠️ Link YouTube tidak valid'; return; }
+      result.textContent = '⏳ Mengambil data...';
+      const proxy = 'https://corsproxy.io/?url=';
+      fetch(proxy + encodeURIComponent(
+          `https://www.youtube.com/get_video_info?video_id=${videoId}&el=embedded&ps=default&eurl=&gl=US&hl=en`))
+        .then(r => r.text())
+        .then(text => {
+          const params = new URLSearchParams(text);
+          const playerResponse = params.get('player_response');
+          if (!playerResponse) throw new Error('Tidak dapat mengambil data video');
+          const json = JSON.parse(playerResponse);
+          const streams = json.streamingData?.formats || [];
+          const adaptive = json.streamingData?.adaptiveFormats || [];
+          const all = [...streams, ...adaptive];
+          let selected = [];
+          if (type === 'video') {
+            selected = all.filter(s => s.mimeType && s.mimeType.includes('video/mp4') && s.hasVideo);
+          } else {
+            selected = all.filter(s => s.mimeType && s.mimeType.includes('audio/mp4') && s.hasAudio);
+          }
+          if (selected.length === 0) { result.textContent = '⚠️ Tidak ditemukan stream yang sesuai'; return; }
+          const best = selected.sort((a, b) => (b.bitrate || 0) - (a.bitrate || 0))[0];
+          const downloadUrl = best.url || '';
+          if (downloadUrl) {
+            result.innerHTML =
+              `<a class="file-link" href="${downloadUrl}" target="_blank">⬇️ Download ${type === 'video' ? 'Video (MP4)' : 'Audio (MP3)'}</a>
+                        <div style="font-size:10px;color:#666;margin-top:4px;">${json.videoDetails?.title || ''}</div>`;
+          } else {
+            result.textContent = '⚠️ URL tidak tersedia';
+          }
+        })
+        .catch(err => { result.textContent = '❌ Error: ' + err.message; });
+    }
+
+    // ====== KALKULATOR ======
+    let calcExpr = '';
+    const calcDisplay = document.getElementById('calcDisplay');
+
+    function calcInput(val) {
+      if (val === '.' && calcExpr.endsWith('.')) return;
+      if (['+', '-', '*', '/'].includes(val)) {
+        if (calcExpr === '' || calcExpr.endsWith('+') || calcExpr.endsWith('-') || calcExpr.endsWith('*') || calcExpr
+          .endsWith('/')) return;
+      }
+      calcExpr += val;
+      calcDisplay.textContent = calcExpr || '0';
+    }
+
+    function calcClear() { calcExpr = '';
+      calcDisplay.textContent = '0'; }
+
+    function calcResult() {
+      try { const result = Function('"use strict"; return (' + calcExpr + ')')();
+        calcDisplay.textContent = result;
+        calcExpr = String(result); } catch (e) { calcDisplay.textContent = 'Error';
+        calcExpr = ''; }
+    }
+
+    // ====== REMOVE BG ======
+    let bgFileData = null;
+
+    function handleBGUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      bgFileData = file;
+      document.getElementById('bgResult').innerHTML =
+        `📎 <span style="color:#aaa;">${file.name}</span> <span style="color:#555;font-size:11px;">(${(file.size/1024).toFixed(1)} KB)</span>`;
+    }
+
+    async function removeBG() {
+      const res = document.getElementById('bgResult');
+      if (!bgFileData) { res.textContent = '⚠️ Upload gambar dulu!'; return; }
+      res.innerHTML = '⏳ Memproses... <span class="spinner"></span>';
+      try {
+        if (typeof window.removeBackground !== 'function') throw new Error('Library belum dimuat.');
+        const imageUrl = URL.createObjectURL(bgFileData);
+        const blob = await window.removeBackground(imageUrl, { output: 'image/png' });
+        const url = URL.createObjectURL(blob);
+        res.innerHTML = `<a class="file-link" href="${url}" download="no-bg.png" target="_blank">🖼️ Download hasil (PNG)</a>`;
+      } catch (err) {
+        try {
+          const img = new Image();
+          img.src = URL.createObjectURL(bgFileData);
+          await new Promise((r, j) => { img.onload = r;
+            img.onerror = j; });
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const d = data.data;
+          const r = d[0],
+            g = d[1],
+            b = d[2];
+          for (let i = 0; i < d.length; i += 4) {
+            if (Math.abs(d[i] - r) < 40 && Math.abs(d[i + 1] - g) < 40 && Math.abs(d[i + 2] - b) < 40) d[i + 3] = 0;
+          }
+          ctx.putImageData(data, 0, 0);
+          const url = canvas.toDataURL('image/png');
+          res.innerHTML =
+            `<a class="file-link" href="${url}" download="no-bg-fallback.png" target="_blank">🖼️ Download (fallback)</a>`;
+        } catch (e2) { res.textContent = '❌ Error: ' + err.message; }
+      }
+    }
+
+    // ====== TANYA USTADZ ======
+    function askUstadz() {
+      const q = document.getElementById('ustadzQuestion').value.trim();
+      const answer = document.getElementById('ustadzAnswer');
+      if (!q) { answer.textContent = '✍️ Tulis pertanyaan dulu ya.'; return; }
+      const low = q.toLowerCase();
+      let jawaban = '';
+      if (low.includes('shalat') || low.includes('salat') || low.includes('sholat')) {
+        jawaban = '🕌 Shalat adalah tiang agama. Wajib dilaksanakan 5 waktu sehari semalam.';
+      } else if (low.includes('puasa') || low.includes('ramadan')) {
+        jawaban = '🌙 Puasa Ramadan adalah kewajiban bagi umat Islam yang baligh dan mampu.';
+      } else if (low.includes('zakat') || low.includes('infak') || low.includes('sedekah')) {
+        jawaban = '💰 Zakat adalah rukun Islam keempat. Zakat fitrah wajib dikeluarkan sebelum Idul Fitri.';
+      } else if (low.includes('haji') || low.includes('umrah')) {
+        jawaban = '🕋 Haji dan Umrah adalah ibadah ke Baitullah bagi yang mampu.';
+      } else if (low.includes('nikah') || low.includes('pernikahan')) {
+        jawaban = '💍 Pernikahan adalah sunnah yang sangat dianjurkan dalam Islam.';
+      } else if (low.includes('doa') || low.includes('berdoa')) {
+        jawaban = '🤲 Doa adalah senjata orang beriman. Berdoalah dengan khusyuk dan yakin akan dikabulkan.';
+      } else {
+        jawaban = '📚 Pertanyaan Anda sangat baik. Untuk jawaban lebih mendetail, konsultasikan dengan ulama terdekat.';
+      }
+      answer.textContent = '🕌 ' + jawaban;
+    }
+
+    // ====== SPAM OTP ======
+    function spamOTP() {
+      const number = document.getElementById('spamNumber').value.trim();
+      const log = document.getElementById('spamLog');
+      if (!number) { log.textContent = '⚠️ Masukkan nomor WA!'; return; }
+      if (!/^[0-9+\s\-]{8,20}$/.test(number)) { log.textContent = '⚠️ Format tidak valid.'; return; }
+      log.textContent = '⏳ Mengirim OTP ke ' + number + ' ...';
+      let count = 0;
+      const maxSpam = 8 + Math.floor(Math.random() * 6);
+      const interval = setInterval(() => {
+        count++;
+        if (count > maxSpam) { clearInterval(interval);
+          log.textContent = '✅ Selesai! ' + maxSpam + ' OTP terkirim (simulasi).'; return; }
+        const kode = String(100000 + Math.floor(Math.random() * 899999));
+        log.textContent = '📨 OTP ' + kode + ' → ' + number + '  (' + count + '/' + maxSpam + ')';
+      }, 500 + Math.random() * 400);
+    }
+
+    // ====== ACAK DADU ======
+    const diceFaces = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+
+    function rollDice() {
+      const box = document.getElementById('diceBox');
+      const result = document.getElementById('diceResult');
+      box.classList.remove('rolling');
+      void box.offsetWidth;
+      box.classList.add('rolling');
+      let count = 0;
+      const maxRolls = 6 + Math.floor(Math.random() * 5);
+      const interval = setInterval(() => {
+        const rand = Math.floor(Math.random() * 6);
+        box.textContent = diceFaces[rand];
+        count++;
+        if (count >= maxRolls) {
+          clearInterval(interval);
+          const final = Math.floor(Math.random() * 6);
+          box.textContent = diceFaces[final];
+          result.textContent = '🎲 Hasil: ' + (final + 1);
+          box.classList.remove('rolling');
+        }
+      }, 80);
+    }
+
+    // ====== UPLOAD FILE ======
+    function uploadFile() {
+      const fileInput = document.getElementById('uploadFileInput');
+      const host = document.getElementById('uploadHost').value;
+      const result = document.getElementById('uploadResult');
+      const file = fileInput.files[0];
+      if (!file) { result.textContent = '⚠️ Pilih file dulu!'; return; }
+      if (host === 'mediafire') {
+        window.open('https://www.mediafire.com/upload', '_blank');
+        result.textContent = '📂 Halaman upload Mediafire dibuka.';
+        return;
+      }
+      result.textContent = '⏳ Mengupload...';
+      const formData = new FormData();
+      formData.append('file', file);
+      let url, options = { method: 'POST', body: formData, mode: 'cors' };
+      if (host === '0x0') url = 'https://0x0.st';
+      else if (host === 'anonfiles') url = 'https://api.anonfiles.com/upload';
+      else if (host === 'catbox') { url = 'https://corsproxy.io/?url=https://catbox.moe/user/api.php';
+        formData.append('reqtype', 'fileupload'); } else if (host === 'litterbox') { url =
+          'https://corsproxy.io/?url=https://litterbox.catbox.moe/resources.php';
+        formData.append('reqtype', 'fileupload');
+        formData.append('time', '24h'); }
+      fetch(url, options)
+        .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); return res.text(); })
+        .then(text => {
+          let link = text.trim();
+          if (host === 'anonfiles') {
+            try { const json = JSON.parse(text); if (json.status && json.data?.file?.url) link = json.data.file.url
+                .full; } catch (e) { throw new Error('Respons tidak valid'); }
+          }
+          if (link.startsWith('http')) result.innerHTML = `<a href="${link}" target="_blank">✅ ${link}</a>`;
+          else result.textContent = '⚠️ ' + text;
+        })
+        .catch(err => { result.textContent = '❌ Error: ' + err.message; });
+    }
+
+    // ====== WINDOWS QUOTES ======
+    function updateWinQuote() {
+      const text = document.getElementById('winQuoteInput').value.trim() || 'Klik "Tampilkan" untuk melihat kutipan';
+      document.getElementById('winQuoteText').textContent = text;
+    }
+
+    function downloadWinQuote() {
+      const el = document.getElementById('winNotification');
+      html2canvas(el, { scale: 2, backgroundColor: '#f0f0f0', logging: false }).then(c => {
+        const a = document.createElement('a');
+        a.download = 'windows-quote.png';
+        a.href = c.toDataURL('image/png');
+        a.click();
+      }).catch(e => alert('Gagal: ' + e.message));
+    }
+
+    // ====== AI RYANZ ======
+    function askAI() {
+      const q = document.getElementById('aiQuestion').value.trim();
+      const key = document.getElementById('aiApiKey').value.trim();
+      const ans = document.getElementById('aiAnswer');
+      if (!q) { ans.textContent = '✍️ Masukkan pertanyaan dulu.'; return; }
+      ans.innerHTML = '<span class="spinner"></span> Berpikir...';
+      if (key) {
+        fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ contents: [{ parts: [{ text: q }] }] })
+            })
+          .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+          .then(d => { ans.textContent = d.candidates?.[0]?.content?.parts?.[0]?.text || 'Maaf, tidak ada jawaban.'; })
+          .catch(e => { ans.textContent = '❌ Error API: ' + e.message + '. Coba tanpa API Key.';
+            fallbackAI(q, ans); });
+      } else { fallbackAI(q, ans); }
+    }
+
+    function fallbackAI(q, el) {
+      const low = q.toLowerCase();
+      let a = '';
+      if (low.includes('matematika') || low.includes('hitung') || low.includes('jumlah')) {
+        const nums = q.match(/\d+/g);
+        if (nums && nums.length >= 2) {
+          const ops = q.match(/[\+\-\*\/xX÷]/g);
+          if (ops && ops.length > 0) {
+            const op = ops[0],
+              n1 = parseFloat(nums[0]),
+              n2 = parseFloat(nums[1]);
+            let r;
+            if (op === '+') r = n1 + n2;
+            else if (op === '-') r = n1 - n2;
+            else if (op === '*' || op === 'x' || op === 'X') r = n1 * n2;
+            else if (op === '/' || op === '÷') r = n1 / n2;
+            else r = '?';
+            a = `🧮 Hasil: ${n1} ${op} ${n2} = ${r}`;
+          } else a = `📊 Angka: ${nums.join(', ')}. Coba "12 + 34"`;
+        } else a = '📐 Contoh: "berapa 12 + 34?"';
+      } else if (low.includes('sejarah')) a = '🏛️ Proklamasi 17 Agustus 1945.';
+      else if (low.includes('ipa') || low.includes('fisika') || low.includes('biologi')) a =
+        '🔬 Sel adalah unit terkecil makhluk hidup.';
+      else if (low.includes('agama') || low.includes('islam')) a = '🕌 Untuk pertanyaan agama, tanya Pak Ustadz di tools ini.';
+      else {
+        const gen = ['🤔 Pertanyaan menarik. Coba jelaskan lebih detail.', '🧠 Saya AI Ryanz, siap membantu PR.'];
+        a = gen[Math.floor(Math.random() * gen.length)];
+      }
+      el.textContent = '🤖 ' + a;
+    }
+
+    // ====== SLOT ANGKA & BAMBU ======
+    let credit = 1000;
+    let slotSpinning = false;
+    let mahjongSpinning = false;
+
+    function updateCreditUI() {
+      document.getElementById('slotCredit').textContent = `💰 Kredit: ${credit}`;
+      document.getElementById('mahjongCredit').textContent = `💰 Kredit: ${credit}`;
+    }
+
+    function spinSlot() {
+      if (slotSpinning) return;
+      if (credit < 10) {
+        document.getElementById('slotResult').textContent = '💔 Kredit kurang!';
+        return;
+      }
+      slotSpinning = true;
+      credit -= 10;
+      updateCreditUI();
+      document.getElementById('slotResult').textContent = '🎰 Berputar...';
+      const r1 = document.getElementById('reel1'),
+        r2 = document.getElementById('reel2'),
+        r3 = document.getElementById('reel3');
+      let count = 0,
+        max = 20 + Math.floor(Math.random() * 10);
+      const iv = setInterval(() => {
+        r1.textContent = Math.floor(Math.random() * 10) + 1;
+        r2.textContent = Math.floor(Math.random() * 10) + 1;
+        r3.textContent = Math.floor(Math.random() * 10) + 1;
+        count++;
+        if (count >= max) {
+          clearInterval(iv);
+          const a = Math.floor(Math.random() * 10) + 1,
+            b = Math.floor(Math.random() * 10) + 1,
+            c = Math.floor(Math.random() * 10) + 1;
+          r1.textContent = a;
+          r2.textContent = b;
+          r3.textContent = c;
+          let msg = '';
+          if (a === b && b === c) { const bonus = 1000000;
+            credit += bonus;
+            msg = `🎉 JACKPOT! +${bonus} kredit!`; } else if (a === b || b === c || a === c) { credit += 10;
+            msg = '✨ Dua sama! +10 kredit.'; } else msg = '😢 Coba lagi!';
+          document.getElementById('slotResult').textContent = msg;
+          updateCreditUI();
+          slotSpinning = false;
+        }
+      }, 80);
+    }
+
+    const bambooSymbols = ['🎋', '🎍', '🌸', '🍃', '🌿', '🎋'];
+
+    function spinMahjong() {
+      if (mahjongSpinning) return;
+      if (credit < 10) {
+        document.getElementById('mahjongResult').textContent = '💔 Kredit kurang!';
+        return;
+      }
+      mahjongSpinning = true;
+      credit -= 10;
+      updateCreditUI();
+      document.getElementById('mahjongResult').textContent = '🎰 Berputar...';
+      const r1 = document.getElementById('m1'),
+        r2 = document.getElementById('m2'),
+        r3 = document.getElementById('m3');
+      let count = 0,
+        max = 20 + Math.floor(Math.random() * 10);
+      const iv = setInterval(() => {
+        r1.textContent = bambooSymbols[Math.floor(Math.random() * bambooSymbols.length)];
+        r2.textContent = bambooSymbols[Math.floor(Math.random() * bambooSymbols.length)];
+        r3.textContent = bambooSymbols[Math.floor(Math.random() * bambooSymbols.length)];
+        count++;
+        if (count >= max) {
+          clearInterval(iv);
+          const a = bambooSymbols[Math.floor(Math.random() * bambooSymbols.length)];
+          const b = bambooSymbols[Math.floor(Math.random() * bambooSymbols.length)];
+          const c = bambooSymbols[Math.floor(Math.random() * bambooSymbols.length)];
+          r1.textContent = a;
+          r2.textContent = b;
+          r3.textContent = c;
+          let msg = '';
+          if (a === b && b === c) { const bonus = 1000000;
+            credit += bonus;
+            msg = `🎉 JACKPOT BAMBU! +${bonus} kredit!`; } else if (a === b || b === c || a === c) { credit += 10;
+            msg = '✨ Dua sama! +10 kredit.'; } else msg = '😢 Coba lagi!';
+          document.getElementById('mahjongResult').textContent = msg;
+          updateCreditUI();
+          mahjongSpinning = false;
+        }
+      }, 80);
+    }
+
+    updateCreditUI();
+
+    // ============================================================
+    // BLOCK BLAST
+    // ============================================================
+    const bb = {
+      grid: [],
+      pieces: [],
+      score: 0,
+      gameOver: false,
+      winScore: 1000000,
+      colors: ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff6bcb', '#a66bff', '#ff9f43', '#00d2d3']
+    };
+
+    function bbInit() {
+      bb.grid = Array.from({ length: 8 }, () => Array(8).fill(0));
+      bb.score = 0;
+      bb.gameOver = false;
+      document.getElementById('bbScore').textContent = '0';
+      document.querySelector('.bb-win-overlay')?.remove();
+      bbGeneratePieces();
+      bbRenderGrid();
+      bbRenderPieces();
+    }
+
+    function bbGeneratePieces() {
+      const shapes = [
+        [[1,1,1]], [[1],[1],[1]], [[1,1],[1,1]], [[1,1],[1,0]], [[1,1],[0,1]],
+        [[1,1,1],[0,1,0]], [[1,1,0],[0,1,1]], [[0,1,1],[1,1,0]],
+        [[1,0,0],[1,1,1]], [[0,0,1],[1,1,1]], [[1,1,1],[1,0,0]], [[1,1,1],[0,0,1]],
+        [[1,1],[1,0],[1,0]], [[1,1],[0,1],[0,1]],
+        [[1,0,0],[1,1,1],[0,0,1]], [[0,0,1],[1,1,1],[1,0,0]]
+      ];
+      bb.pieces = [];
+      for (let i = 0; i < 3; i++) {
+        const idx = Math.floor(Math.random() * shapes.length);
+        const shape = shapes[idx].map(row => row.slice());
+        const color = bb.colors[Math.floor(Math.random() * bb.colors.length)];
+        bb.pieces.push({ shape, color, used: false });
+      }
+    }
+
+    function bbRenderGrid() {
+      const gridEl = document.getElementById('bbGrid');
+      gridEl.innerHTML = '';
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const cell = document.createElement('div');
+          cell.className = 'bb-cell';
+          cell.dataset.row = r;
+          cell.dataset.col = c;
+          if (bb.grid[r][c]) {
+            cell.classList.add('filled');
+            cell.style.background = bb.grid[r][c];
+          }
+          gridEl.appendChild(cell);
+        }
+      }
+    }
+
+    function bbRenderPieces() {
+      const container = document.getElementById('bbPieces');
+      container.innerHTML = '';
+      bb.pieces.forEach((piece, idx) => {
+        if (piece.used) return;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'bb-piece';
+        wrapper.dataset.pieceIndex = idx;
+        wrapper.style.gridTemplateColumns = `repeat(${piece.shape[0].length}, 20px)`;
+        piece.shape.forEach(row => {
+          row.forEach(cell => {
+            const mini = document.createElement('div');
+            mini.className = 'bb-mini-cell';
+            if (cell) mini.style.background = piece.color;
+            else mini.style.opacity = '0.1';
+            wrapper.appendChild(mini);
+          });
+        });
+        wrapper.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          bbStartDrag(e, idx);
+        });
+        wrapper.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          const touch = e.changedTouches[0];
+          bbStartDrag({ clientX: touch.clientX, clientY: touch.clientY, target: wrapper, preventDefault: () => {} },
+            idx);
+        }, { passive: false });
+        container.appendChild(wrapper);
+      });
+      if (bb.pieces.every(p => p.used)) {
+        bbGeneratePieces();
+        bbRenderPieces();
+      }
+    }
+
+    let ghostEl = null;
+    let dragActive = false;
+    let dragPieceIndex = -1;
+
+    function bbStartDrag(e, pieceIndex) {
+      if (bb.gameOver) return;
+      const piece = bb.pieces[pieceIndex];
+      if (piece.used) return;
+      dragActive = true;
+      dragPieceIndex = pieceIndex;
+      const rect = e.target.getBoundingClientRect();
+      ghostEl = document.createElement('div');
+      ghostEl.className = 'bb-ghost';
+      const shape = piece.shape;
+      ghostEl.style.gridTemplateColumns = `repeat(${shape[0].length}, 24px)`;
+      shape.forEach(row => {
+        row.forEach(cell => {
+          const mini = document.createElement('div');
+          mini.className = 'bb-mini-cell';
+          if (cell) mini.style.background = piece.color;
+          else mini.style.opacity = '0.1';
+          ghostEl.appendChild(mini);
+        });
+      });
+      document.body.appendChild(ghostEl);
+      bbMoveGhost(e.clientX, e.clientY);
+      e.target.classList.add('dragging');
+      document.addEventListener('mousemove', bbOnDragMove);
+      document.addEventListener('touchmove', bbOnDragTouchMove, { passive: false });
+      document.addEventListener('mouseup', bbOnDragEnd);
+      document.addEventListener('touchend', bbOnDragEnd, { passive: false });
+    }
+
+    function bbMoveGhost(clientX, clientY) {
+      if (!ghostEl) return;
+      ghostEl.style.left = clientX + 'px';
+      ghostEl.style.top = clientY + 'px';
+      const gridEl = document.getElementById('bbGrid');
+      const rect = gridEl.getBoundingClientRect();
+      const cellSize = rect.width / 8;
+      const col = Math.floor((clientX - rect.left) / cellSize);
+      const row = Math.floor((clientY - rect.top) / cellSize);
+      bbShowPreview(row, col);
+    }
+
+    function bbOnDragMove(e) { e.preventDefault(); if (!dragActive || !ghostEl) return;
+      bbMoveGhost(e.clientX, e.clientY); }
+
+    function bbOnDragTouchMove(e) { e.preventDefault(); if (!dragActive || !ghostEl) return; const touch = e
+        .changedTouches[0];
+      bbMoveGhost(touch.clientX, touch.clientY); }
+
+    function bbOnDragEnd(e) {
+      if (!dragActive) return;
+      dragActive = false;
+      if (ghostEl) { ghostEl.remove();
+        ghostEl = null; }
+      bbClearPreview();
+      const piece = bb.pieces[dragPieceIndex];
+      if (piece && !piece.used) {
+        const gridEl = document.getElementById('bbGrid');
+        const rect = gridEl.getBoundingClientRect();
+        const cellSize = rect.width / 8;
+        let clientX, clientY;
+        if (e.changedTouches) {
+          clientX = e.changedTouches[0].clientX;
+          clientY = e.changedTouches[0].clientY;
+        } else {
+          clientX = e.clientX;
+          clientY = e.clientY;
+        }
+        const col = Math.floor((clientX - rect.left) / cellSize);
+        const row = Math.floor((clientY - rect.top) / cellSize);
+        if (bbCanPlace(piece, row, col)) {
+          bbPlacePiece(dragPieceIndex, row, col);
+        }
+      }
+      document.querySelectorAll('.bb-piece').forEach(el => el.classList.remove('dragging'));
+      document.removeEventListener('mousemove', bbOnDragMove);
+      document.removeEventListener('touchmove', bbOnDragTouchMove);
+      document.removeEventListener('mouseup', bbOnDragEnd);
+      document.removeEventListener('touchend', bbOnDragEnd);
+    }
+
+    function bbShowPreview(row, col) {
+      bbClearPreview();
+      if (dragPieceIndex < 0 || dragPieceIndex >= bb.pieces.length) return;
+      const piece = bb.pieces[dragPieceIndex];
+      if (!piece || piece.used) return;
+      const shape = piece.shape;
+      const gridEl = document.getElementById('bbGrid');
+      const cells = gridEl.children;
+      let valid = true;
+      for (let r = 0; r < shape.length; r++) {
+        for (let c = 0; c < shape[0].length; c++) {
+          if (shape[r][c]) {
+            const gr = row + r,
+              gc = col + c;
+            if (gr >= 8 || gc >= 8 || gr < 0 || gc < 0 || bb.grid[gr][gc]) { valid = false; break; }
+          }
+        }
+        if (!valid) break;
+      }
+      for (let r = 0; r < shape.length; r++) {
+        for (let c = 0; c < shape[0].length; c++) {
+          if (shape[r][c]) {
+            const gr = row + r,
+              gc = col + c;
+            if (gr >= 0 && gr < 8 && gc >= 0 && gc < 8) {
+              const idx = gr * 8 + gc;
+              const cell = cells[idx];
+              if (cell) {
+                cell.classList.add('preview');
+                if (valid) cell.classList.add('valid');
+                else cell.classList.add('invalid');
+              }
+            }
+          }
+        }
+      }
+    }
+
+    function bbClearPreview() {
+      document.querySelectorAll('.bb-cell.preview').forEach(el => {
+        el.classList.remove('preview', 'valid', 'invalid');
+      });
+    }
+
+    function bbCanPlace(piece, row, col) {
+      const shape = piece.shape;
+      for (let r = 0; r < shape.length; r++) {
+        for (let c = 0; c < shape[0].length; c++) {
+          if (shape[r][c]) {
+            const gr = row + r,
+              gc = col + c;
+            if (gr >= 8 || gc >= 8 || gr < 0 || gc < 0 || bb.grid[gr][gc]) return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    function bbPlacePiece(pieceIndex, row, col) {
+      const piece = bb.pieces[pieceIndex];
+      if (!piece || piece.used) return;
+      if (!bbCanPlace(piece, row, col)) return;
+      const shape = piece.shape;
+      for (let r = 0; r < shape.length; r++) {
+        for (let c = 0; c < shape[0].length; c++) {
+          if (shape[r][c]) {
+            bb.grid[row + r][col + c] = piece.color;
+          }
+        }
+      }
+      piece.used = true;
+      let cleared = 0;
+      for (let r = 0; r < 8; r++) {
+        if (bb.grid[r].every(cell => cell !== 0)) {
+          bb.grid[r] = Array(8).fill(0);
+          cleared++;
+        }
+      }
+      for (let c = 0; c < 8; c++) {
+        let full = true;
+        for (let r = 0; r < 8; r++) {
+          if (!bb.grid[r][c]) { full = false; break; }
+        }
+        if (full) {
+          for (let r = 0; r < 8; r++) bb.grid[r][c] = 0;
+          cleared++;
+        }
+      }
+      if (cleared > 0) {
+        bb.score += cleared * 100;
+      } else {
+        bb.score += 10;
+      }
+      document.getElementById('bbScore').textContent = bb.score;
+      if (bb.score >= bb.winScore) {
+        bb.gameOver = true;
+        const overlay = document.createElement('div');
+        overlay.className = 'bb-win-overlay';
+        overlay.innerHTML =
+          `<h1>🎉 SELAMAT!</h1><p>Skor Anda mencapai <strong>1.000.000</strong>!<br>Anda MENANG!</p><button class="btn-tool btn-primary" onclick="bbInit();this.closest('.bb-win-overlay').remove();"><i class="fas fa-redo"></i> Main Lagi</button>`;
+        document.body.appendChild(overlay);
+        return;
+      }
+      bbRenderGrid();
+      if (bb.pieces.every(p => p.used)) {
+        bbGeneratePieces();
+        bbRenderPieces();
+      }
+      let canPlaceAny = false;
+      for (let pi = 0; pi < bb.pieces.length; pi++) {
+        if (bb.pieces[pi].used) continue;
+        for (let r = 0; r < 8; r++) {
+          for (let c = 0; c < 8; c++) {
+            if (bbCanPlace(bb.pieces[pi], r, c)) { canPlaceAny = true; break; }
+          }
+          if (canPlaceAny) break;
+        }
+        if (canPlaceAny) break;
+      }
+      if (!canPlaceAny && !bb.gameOver) {
+        bb.gameOver = true;
+        alert('😢 Game Over! Tidak ada blok yang bisa ditempatkan. Skor akhir: ' + bb.score);
+        bbInit();
+      }
+    }
+
+    function bbResetGame() {
+      document.querySelector('.bb-win-overlay')?.remove();
+      bbInit();
+    }
+
+    setTimeout(bbInit, 500);
+
+
+    // ============================================================
+    // AUDIO PLAYER
+    // ============================================================
+    let audioElement = null;
+    let audioURL = null;
+    let isPlaying = false;
+
+    document.getElementById('audioFileInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('audio/')) {
+        document.getElementById('audioStatus').textContent = '❌ File bukan audio!';
+        return;
+      }
+      if (audioURL) URL.revokeObjectURL(audioURL);
+      audioURL = URL.createObjectURL(file);
+      if (audioElement) {
+        audioElement.pause();
+        audioElement.src = audioURL;
+        audioElement.load();
+      } else {
+        audioElement = new Audio(audioURL);
+        audioElement.addEventListener('timeupdate', updateProgress);
+        audioElement.addEventListener('ended', () => {
+          isPlaying = false;
+          document.getElementById('playBtn').innerHTML = '<i class="fas fa-play"></i> Putar';
+          document.getElementById('audioStatus').textContent = '⏹️ Selesai';
+          document.getElementById('audioProgressFill').style.width = '0%';
+        });
+        audioElement.addEventListener('loadedmetadata', () => {
+          document.getElementById('audioDuration').textContent = 'Durasi: ' + formatTime(audioElement.duration);
+        });
+      }
+      document.getElementById('audioFileName').textContent = file.name;
+      document.getElementById('audioDuration').textContent = 'Durasi: ' + formatTime(audioElement.duration || 0);
+      document.getElementById('audioStatus').textContent = '✅ Audio siap diputar';
+      document.getElementById('playBtn').innerHTML = '<i class="fas fa-play"></i> Putar';
+      isPlaying = false;
+      updateProgress();
+    });
+
+    function togglePlay() {
+      if (!audioElement || !audioURL) {
+        document.getElementById('audioStatus').textContent = '⚠️ Upload file audio dulu!';
+        return;
+      }
+      if (isPlaying) {
+        audioElement.pause();
+        isPlaying = false;
+        document.getElementById('playBtn').innerHTML = '<i class="fas fa-play"></i> Putar';
+        document.getElementById('audioStatus').textContent = '⏸️ Dijeda';
+      } else {
+        audioElement.play()
+          .then(() => {
+            isPlaying = true;
+            document.getElementById('playBtn').innerHTML = '<i class="fas fa-pause"></i> Jeda';
+            document.getElementById('audioStatus').textContent = '▶️ Sedang diputar';
+          })
+          .catch(err => {
+            document.getElementById('audioStatus').textContent = '❌ Gagal memutar: ' + err.message;
+          });
+      }
+    }
+
+    function stopAudio() {
+      if (audioElement) {
+        audioElement.pause();
+        audioElement.currentTime = 0;
+        isPlaying = false;
+        document.getElementById('playBtn').innerHTML = '<i class="fas fa-play"></i> Putar';
+        document.getElementById('audioStatus').textContent = '⏹️ Dihentikan';
+        document.getElementById('audioProgressFill').style.width = '0%';
+        document.getElementById('audioTimeLabel').textContent = '0:00 / ' + formatTime(audioElement.duration || 0);
+      }
+    }
+
+    function updateProgress() {
+      if (!audioElement) return;
+      const current = audioElement.currentTime || 0;
+      const duration = audioElement.duration || 0;
+      const percent = duration > 0 ? (current / duration) * 100 : 0;
+      document.getElementById('audioProgressFill').style.width = percent + '%';
+      document.getElementById('audioTimeLabel').textContent = formatTime(current) + ' / ' + formatTime(duration);
+    }
+
+    function seekAudio(e) {
+      if (!audioElement || !audioElement.duration) return;
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const time = x * audioElement.duration;
+      audioElement.currentTime = time;
+      updateProgress();
+    }
+
+    function formatTime(seconds) {
+      if (isNaN(seconds) || !isFinite(seconds)) return '0:00';
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      return m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    document.getElementById('audioProgress').addEventListener('click', seekAudio);
+
+
+    // ============================================================
+    // CHESS GAME (DENGAN HIGHLIGHT HIJAU/MERAH)
+    // ============================================================
+    let chess = {
+      board: [],
+      turn: 'white',
+      selected: null,
+      mode: 'ai',
+      gameOver: false,
+      history: [],
+      moveCount: 0,
+      kingPos: { white: [7,4], black: [0,4] },
+      enPassant: null,
+      castling: { white: { kingSide: true, queenSide: true }, black: { kingSide: true, queenSide: true } }
+    };
+
+    const chessPieces = {
+      'white_king': '♔', 'white_queen': '♕', 'white_rook': '♖', 'white_bishop': '♗', 'white_knight': '♘', 'white_pawn': '♙',
+      'black_king': '♚', 'black_queen': '♛', 'black_rook': '♜', 'black_bishop': '♝', 'black_knight': '♞', 'black_pawn': '♟'
+    };
+
+    function chessInit() {
+      chessReset();
+    }
+
+    function chessReset() {
+      const board = [];
+      for (let r = 0; r < 8; r++) {
+        board[r] = [];
+        for (let c = 0; c < 8; c++) {
+          if (r === 0) {
+            board[r][c] = ['black_rook', 'black_knight', 'black_bishop', 'black_queen', 'black_king', 'black_bishop', 'black_knight', 'black_rook'][c];
+          } else if (r === 1) {
+            board[r][c] = 'black_pawn';
+          } else if (r === 6) {
+            board[r][c] = 'white_pawn';
+          } else if (r === 7) {
+            board[r][c] = ['white_rook', 'white_knight', 'white_bishop', 'white_queen', 'white_king', 'white_bishop', 'white_knight', 'white_rook'][c];
+          } else {
+            board[r][c] = null;
+          }
+        }
+      }
+      chess.board = board;
+      chess.turn = 'white';
+      chess.selected = null;
+      chess.gameOver = false;
+      chess.history = [];
+      chess.moveCount = 0;
+      chess.kingPos = { white: [7,4], black: [0,4] };
+      chess.enPassant = null;
+      chess.castling = { white: { kingSide: true, queenSide: true }, black: { kingSide: true, queenSide: true } };
+      chess.mode = 'ai';
+      chessRender();
+      document.getElementById('chessStatus').textContent = 'Klik "Mulai" untuk bermain';
+    }
+
+    function chessStart(mode) {
+      chessReset();
+      chess.mode = mode;
+      if (mode === 'ai') {
+        document.getElementById('chessStatus').textContent = 'Giliran: Putih (Anda) vs AI';
+      } else {
+        document.getElementById('chessStatus').textContent = 'Giliran: Putih (Pemain 1)';
+      }
+      chessRender();
+    }
+
+    function chessGetValidMoves(row, col) {
+      const piece = chess.board[row][col];
+      if (!piece) return [];
+      const color = piece.split('_')[0];
+      const type = piece.split('_')[1];
+      const moves = [];
+      const enemy = color === 'white' ? 'black' : 'white';
+
+      const addMove = (r, c) => {
+        if (r < 0 || r > 7 || c < 0 || c > 7) return false;
+        const target = chess.board[r][c];
+        if (target && target.split('_')[0] === color) return false;
+        moves.push([r, c]);
+        return !target;
+      };
+
+      const addSliding = (dr, dc) => {
+        let r = row + dr, c = col + dc;
+        while (r >= 0 && r < 8 && c >= 0 && c < 8) {
+          const target = chess.board[r][c];
+          if (target) {
+            if (target.split('_')[0] === enemy) moves.push([r, c]);
+            break;
+          }
+          moves.push([r, c]);
+          r += dr; c += dc;
+        }
+      };
+
+      switch(type) {
+        case 'pawn': {
+          const dir = color === 'white' ? -1 : 1;
+          const startRow = color === 'white' ? 6 : 1;
+          if (row + dir >= 0 && row + dir < 8 && !chess.board[row + dir][col]) {
+            moves.push([row + dir, col]);
+            if (row === startRow && !chess.board[row + 2*dir][col]) {
+              moves.push([row + 2*dir, col]);
+            }
+          }
+          for (const dc of [-1, 1]) {
+            const nr = row + dir, nc = col + dc;
+            if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
+              const target = chess.board[nr][nc];
+              if (target && target.split('_')[0] === enemy) moves.push([nr, nc]);
+              if (chess.enPassant && chess.enPassant[0] === nr && chess.enPassant[1] === nc) {
+                moves.push([nr, nc]);
+              }
+            }
+          }
+          break;
+        }
+        case 'knight': {
+          const knightMoves = [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]];
+          for (const [dr, dc] of knightMoves) {
+            addMove(row + dr, col + dc);
+          }
+          break;
+        }
+        case 'bishop': {
+          addSliding(1,1); addSliding(1,-1); addSliding(-1,1); addSliding(-1,-1);
+          break;
+        }
+        case 'rook': {
+          addSliding(1,0); addSliding(-1,0); addSliding(0,1); addSliding(0,-1);
+          break;
+        }
+        case 'queen': {
+          addSliding(1,1); addSliding(1,-1); addSliding(-1,1); addSliding(-1,-1);
+          addSliding(1,0); addSliding(-1,0); addSliding(0,1); addSliding(0,-1);
+          break;
+        }
+        case 'king': {
+          const kingMoves = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+          for (const [dr, dc] of kingMoves) {
+            addMove(row + dr, col + dc);
+          }
+          if (color === 'white' && chess.castling.white.kingSide && row === 7 && col === 4) {
+            if (!chess.board[7][5] && !chess.board[7][6] && chess.board[7][7] === 'white_rook') {
+              if (!chessIsSquareAttacked(7, 4, 'black') && !chessIsSquareAttacked(7, 5, 'black') && !chessIsSquareAttacked(7, 6, 'black')) {
+                moves.push([7, 6]);
+              }
+            }
+          }
+          if (color === 'white' && chess.castling.white.queenSide && row === 7 && col === 4) {
+            if (!chess.board[7][3] && !chess.board[7][2] && !chess.board[7][1] && chess.board[7][0] === 'white_rook') {
+              if (!chessIsSquareAttacked(7, 4, 'black') && !chessIsSquareAttacked(7, 3, 'black') && !chessIsSquareAttacked(7, 2, 'black')) {
+                moves.push([7, 2]);
+              }
+            }
+          }
+          if (color === 'black' && chess.castling.black.kingSide && row === 0 && col === 4) {
+            if (!chess.board[0][5] && !chess.board[0][6] && chess.board[0][7] === 'black_rook') {
+              if (!chessIsSquareAttacked(0, 4, 'white') && !chessIsSquareAttacked(0, 5, 'white') && !chessIsSquareAttacked(0, 6, 'white')) {
+                moves.push([0, 6]);
+              }
+            }
+          }
+          if (color === 'black' && chess.castling.black.queenSide && row === 0 && col === 4) {
+            if (!chess.board[0][3] && !chess.board[0][2] && !chess.board[0][1] && chess.board[0][0] === 'black_rook') {
+              if (!chessIsSquareAttacked(0, 4, 'white') && !chessIsSquareAttacked(0, 3, 'white') && !chessIsSquareAttacked(0, 2, 'white')) {
+                moves.push([0, 2]);
+              }
+            }
+          }
+          break;
+        }
+      }
+      return moves;
+    }
+
+    function chessIsSquareAttacked(row, col, byColor) {
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const piece = chess.board[r][c];
+          if (!piece) continue;
+          const color = piece.split('_')[0];
+          if (color !== byColor) continue;
+          const type = piece.split('_')[1];
+          if (type === 'pawn') {
+            const dir = color === 'white' ? -1 : 1;
+            if (r + dir === row && (c - 1 === col || c + 1 === col)) return true;
+          } else if (type === 'knight') {
+            const moves = [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]];
+            for (const [dr, dc] of moves) {
+              if (r + dr === row && c + dc === col) return true;
+            }
+          } else if (type === 'king') {
+            const moves = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+            for (const [dr, dc] of moves) {
+              if (r + dr === row && c + dc === col) return true;
+            }
+          } else if (type === 'bishop' || type === 'queen') {
+            const dirs = [[1,1],[1,-1],[-1,1],[-1,-1]];
+            for (const [dr, dc] of dirs) {
+              let nr = r + dr, nc = c + dc;
+              while (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
+                if (nr === row && nc === col) return true;
+                if (chess.board[nr][nc]) break;
+                nr += dr; nc += dc;
+              }
+            }
+          }
+          if (type === 'rook' || type === 'queen') {
+            const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
+            for (const [dr, dc] of dirs) {
+              let nr = r + dr, nc = c + dc;
+              while (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
+                if (nr === row && nc === col) return true;
+                if (chess.board[nr][nc]) break;
+                nr += dr; nc += dc;
+              }
+            }
+          }
+        }
+      }
+      return false;
+    }
+
+    function chessMakeMove(fromRow, fromCol, toRow, toCol) {
+      const piece = chess.board[fromRow][fromCol];
+      const target = chess.board[toRow][toCol];
+      const color = piece.split('_')[0];
+      const type = piece.split('_')[1];
+
+      const historyEntry = {
+        fromRow, fromCol, toRow, toCol,
+        piece, target,
+        enPassant: chess.enPassant,
+        castling: JSON.parse(JSON.stringify(chess.castling))
+      };
+
+      chess.board[toRow][toCol] = piece;
+      chess.board[fromRow][fromCol] = null;
+
+      if (type === 'pawn' && chess.enPassant && chess.enPassant[0] === toRow && chess.enPassant[1] === toCol) {
+        chess.board[fromRow][toCol] = null;
+      }
+
+      chess.enPassant = null;
+      if (type === 'pawn' && Math.abs(toRow - fromRow) === 2) {
+        chess.enPassant = [(fromRow + toRow) / 2, fromCol];
+      }
+
+      if (type === 'king') {
+        if (toCol - fromCol === 2) {
+          chess.board[fromRow][5] = chess.board[fromRow][7];
+          chess.board[fromRow][7] = null;
+        } else if (toCol - fromCol === -2) {
+          chess.board[fromRow][3] = chess.board[fromRow][0];
+          chess.board[fromRow][0] = null;
+        }
+        chess.kingPos[color] = [toRow, toCol];
+        if (color === 'white') chess.castling.white = { kingSide: false, queenSide: false };
+        else chess.castling.black = { kingSide: false, queenSide: false };
+      }
+
+      if (type === 'rook') {
+        if (color === 'white') {
+          if (fromRow === 7 && fromCol === 7) chess.castling.white.kingSide = false;
+          if (fromRow === 7 && fromCol === 0) chess.castling.white.queenSide = false;
+        } else {
+          if (fromRow === 0 && fromCol === 7) chess.castling.black.kingSide = false;
+          if (fromRow === 0 && fromCol === 0) chess.castling.black.queenSide = false;
+        }
+      }
+
+      if (type === 'pawn' && (toRow === 0 || toRow === 7)) {
+        chess.board[toRow][toCol] = color + '_queen';
+      }
+
+      historyEntry.board = chess.board.map(row => [...row]);
+      chess.history.push(historyEntry);
+      chess.moveCount++;
+
+      chess.turn = chess.turn === 'white' ? 'black' : 'white';
+      chess.selected = null;
+
+      chessCheckGameOver();
+      chessRender();
+
+      if (!chess.gameOver && chess.mode === 'ai' && chess.turn === 'black') {
+        setTimeout(chessAIMove, 400);
+      }
+    }
+
+    function chessCheckGameOver() {
+      const kingColor = chess.turn;
+      const kingPos = chess.kingPos[kingColor];
+      if (!kingPos) return;
+      const enemy = kingColor === 'white' ? 'black' : 'white';
+      const inCheck = chessIsSquareAttacked(kingPos[0], kingPos[1], enemy);
+
+      let hasValidMoves = false;
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const piece = chess.board[r][c];
+          if (!piece) continue;
+          if (piece.split('_')[0] !== chess.turn) continue;
+          const moves = chessGetValidMoves(r, c);
+          if (moves.length > 0) {
+            for (const [tr, tc] of moves) {
+              const oldBoard = chess.board.map(row => [...row]);
+              const oldEnPassant = chess.enPassant;
+              const oldKingPos = { ...chess.kingPos };
+              const oldCastling = JSON.parse(JSON.stringify(chess.castling));
+              const tempBoard = oldBoard.map(row => [...row]);
+              const tempPiece = tempBoard[r][c];
+              tempBoard[tr][tc] = tempPiece;
+              tempBoard[r][c] = null;
+              if (chess.enPassant && chess.enPassant[0] === tr && chess.enPassant[1] === tc) {
+                tempBoard[r][tc] = null;
+              }
+              let tempKingPos = { ...oldKingPos };
+              if (tempPiece.split('_')[1] === 'king') {
+                tempKingPos[tempPiece.split('_')[0]] = [tr, tc];
+              }
+              if (tempPiece.split('_')[1] === 'king') {
+                if (tc - c === 2) {
+                  tempBoard[r][5] = tempBoard[r][7];
+                  tempBoard[r][7] = null;
+                } else if (tc - c === -2) {
+                  tempBoard[r][3] = tempBoard[r][0];
+                  tempBoard[r][0] = null;
+                }
+              }
+              const kingPosTemp = tempKingPos[chess.turn];
+              const enemyTemp = chess.turn === 'white' ? 'black' : 'white';
+              const stillInCheck = chessIsSquareAttackedOnBoard(tempBoard, kingPosTemp[0], kingPosTemp[1], enemyTemp);
+              if (!stillInCheck) hasValidMoves = true;
+              break;
+            }
+          }
+          if (hasValidMoves) break;
+        }
+        if (hasValidMoves) break;
+      }
+
+      if (!hasValidMoves) {
+        chess.gameOver = true;
+        if (inCheck) {
+          const winner = chess.turn === 'white' ? 'Hitam' : 'Putih';
+          document.getElementById('chessStatus').textContent = '♚ Skakmat! ' + winner + ' menang!';
+        } else {
+          document.getElementById('chessStatus').textContent = '🤝 Stalemate! Seri!';
+        }
+        return;
+      }
+
+      if (inCheck) {
+        document.getElementById('chessStatus').textContent = '⚠️ Skak! ' + (chess.turn === 'white' ? 'Putih' : 'Hitam') + ' dalam skak!';
+      } else {
+        const turnName = chess.turn === 'white' ? 'Putih' : 'Hitam';
+        if (chess.mode === 'ai' && chess.turn === 'black') {
+          document.getElementById('chessStatus').textContent = '🤖 AI (Hitam) berpikir...';
+        } else {
+          document.getElementById('chessStatus').textContent = 'Giliran: ' + turnName;
+        }
+      }
+    }
+
+    function chessIsSquareAttackedOnBoard(board, row, col, byColor) {
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const piece = board[r][c];
+          if (!piece) continue;
+          const color = piece.split('_')[0];
+          if (color !== byColor) continue;
+          const type = piece.split('_')[1];
+          if (type === 'pawn') {
+            const dir = color === 'white' ? -1 : 1;
+            if (r + dir === row && (c - 1 === col || c + 1 === col)) return true;
+          } else if (type === 'knight') {
+            const moves = [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]];
+            for (const [dr, dc] of moves) {
+              if (r + dr === row && c + dc === col) return true;
+            }
+          } else if (type === 'king') {
+            const moves = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+            for (const [dr, dc] of moves) {
+              if (r + dr === row && c + dc === col) return true;
+            }
+          } else if (type === 'bishop' || type === 'queen') {
+            const dirs = [[1,1],[1,-1],[-1,1],[-1,-1]];
+            for (const [dr, dc] of dirs) {
+              let nr = r + dr, nc = c + dc;
+              while (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
+                if (nr === row && nc === col) return true;
+                if (board[nr][nc]) break;
+                nr += dr; nc += dc;
+              }
+            }
+          }
+          if (type === 'rook' || type === 'queen') {
+            const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
+            for (const [dr, dc] of dirs) {
+              let nr = r + dr, nc = c + dc;
+              while (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
+                if (nr === row && nc === col) return true;
+                if (board[nr][nc]) break;
+                nr += dr; nc += dc;
+              }
+            }
+          }
+        }
+      }
+      return false;
+    }
+
+    function chessAIMove() {
+      if (chess.gameOver || chess.mode !== 'ai' || chess.turn !== 'black') return;
+
+      let bestMoves = [];
+      let bestScore = -999;
+
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const piece = chess.board[r][c];
+          if (!piece || piece.split('_')[0] !== 'black') continue;
+          const moves = chessGetValidMoves(r, c);
+          for (const [tr, tc] of moves) {
+            const target = chess.board[tr][tc];
+            let score = 0;
+            if (target) {
+              const type = target.split('_')[1];
+              const values = { pawn: 1, knight: 3, bishop: 3, rook: 5, queen: 9, king: 100 };
+              score = values[type] || 0;
+            }
+            score += (4 - Math.abs(tr - 3.5)) * 0.1 + (4 - Math.abs(tc - 3.5)) * 0.1;
+            const tempBoard = chess.board.map(row => [...row]);
+            const tempPiece = tempBoard[r][c];
+            tempBoard[tr][tc] = tempPiece;
+            tempBoard[r][c] = null;
+            const kingPos = chess.kingPos['white'];
+            if (chessIsSquareAttackedOnBoard(tempBoard, kingPos[0], kingPos[1], 'black')) {
+              score += 3;
+            }
+            if (score > bestScore) {
+              bestScore = score;
+              bestMoves = [[r, c, tr, tc]];
+            } else if (score === bestScore) {
+              bestMoves.push([r, c, tr, tc]);
+            }
+          }
+        }
+      }
+
+      if (bestMoves.length === 0) {
+        chess.gameOver = true;
+        document.getElementById('chessStatus').textContent = '🏆 Anda menang! AI tidak bisa bergerak.';
+        chessRender();
+        return;
+      }
+
+      const move = bestMoves[Math.floor(Math.random() * bestMoves.length)];
+      chessMakeMove(move[0], move[1], move[2], move[3]);
+    }
+
+    function chessRender() {
+      const boardEl = document.getElementById('chessBoard');
+      boardEl.innerHTML = '';
+      
+      // Kumpulkan highlight dulu
+      let highlights = {};
+      if (chess.selected) {
+        const [sr, sc] = chess.selected;
+        const moves = chessGetValidMoves(sr, sc);
+        moves.forEach(([r, c]) => {
+          const key = r + ',' + c;
+          const target = chess.board[r][c];
+          highlights[key] = target ? 'red' : 'green';
+        });
+      }
+      
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const cell = document.createElement('div');
+          const isLight = (r + c) % 2 === 0;
+          cell.className = `chess-cell ${isLight ? 'light' : 'dark'}`;
+          cell.dataset.row = r;
+          cell.dataset.col = c;
+
+          const piece = chess.board[r][c];
+          if (piece) {
+            const span = document.createElement('span');
+            span.className = piece.split('_')[0] === 'white' ? 'piece-white' : 'piece-black';
+            span.textContent = chessPieces[piece] || '?';
+            cell.appendChild(span);
+          }
+
+          if (chess.selected && chess.selected[0] === r && chess.selected[1] === c) {
+            cell.classList.add('selected');
+          }
+          
+          // Highlight valid moves
+          const key = r + ',' + c;
+          if (highlights[key] === 'green') {
+            cell.classList.add('highlight-green');
+          } else if (highlights[key] === 'red') {
+            cell.classList.add('highlight-red');
+          }
+
+          cell.addEventListener('click', () => chessHandleClick(r, c));
+          cell.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            chessHandleClick(r, c);
+          }, { passive: false });
+
+          boardEl.appendChild(cell);
+        }
+      }
+    }
+
+    function chessHandleClick(row, col) {
+      if (chess.gameOver) return;
+      if (chess.mode === 'ai' && chess.turn === 'black') return;
+
+      const piece = chess.board[row][col];
+
+      if (chess.selected) {
+        const [sr, sc] = chess.selected;
+        if (sr === row && sc === col) {
+          chess.selected = null;
+          chessRender();
+          return;
+        }
+        const moves = chessGetValidMoves(sr, sc);
+        if (moves.some(([r, c]) => r === row && c === col)) {
+          chessMakeMove(sr, sc, row, col);
+          return;
+        }
+        if (piece && piece.split('_')[0] === chess.turn) {
+          chess.selected = [row, col];
+          chessRender();
+          return;
+        }
+        chess.selected = null;
+        chessRender();
+        return;
+      }
+
+      if (piece && piece.split('_')[0] === chess.turn) {
+        const moves = chessGetValidMoves(row, col);
+        if (moves.length > 0) {
+          chess.selected = [row, col];
+          chessRender();
+          const moveCount = moves.length;
+          const captureCount = moves.filter(([r,c]) => chess.board[r][c]).length;
+          document.getElementById('chessStatus').textContent = 'Pilih tujuan (' + moveCount + ' langkah, ' + captureCount + ' dapat ditangkap)';
+          return;
+        }
+      }
+    }
+
+    function chessUndo() {
+      if (chess.history.length === 0) return;
+      if (chess.mode === 'ai' && chess.history.length >= 2) {
+        for (let i = 0; i < 2; i++) {
+          const entry = chess.history.pop();
+          if (!entry) break;
+          chess.board = entry.board;
+          chess.turn = entry.piece.split('_')[0];
+          chess.enPassant = entry.enPassant;
+          chess.castling = entry.castling;
+          if (entry.piece.split('_')[1] === 'king') {
+            chess.kingPos[entry.piece.split('_')[0]] = [entry.fromRow, entry.fromCol];
+          }
+        }
+        chess.moveCount = chess.history.length;
+        chess.selected = null;
+        chess.gameOver = false;
+        chessRender();
+        document.getElementById('chessStatus').textContent = '⏪ Undo! Giliran: ' + (chess.turn === 'white' ? 'Putih' : 'Hitam');
+        return;
+      }
+      const entry = chess.history.pop();
+      if (!entry) return;
+      chess.board = entry.board;
+      chess.turn = entry.piece.split('_')[0];
+      chess.enPassant = entry.enPassant;
+      chess.castling = entry.castling;
+      if (entry.piece.split('_')[1] === 'king') {
+        chess.kingPos[entry.piece.split('_')[0]] = [entry.fromRow, entry.fromCol];
+      }
+      chess.moveCount = chess.history.length;
+      chess.selected = null;
+      chess.gameOver = false;
+      chessRender();
+      document.getElementById('chessStatus').textContent = '⏪ Undo! Giliran: ' + (chess.turn === 'white' ? 'Putih' : 'Hitam');
+    }
+
+    window.chessStart = chessStart;
+    window.chessReset = chessReset;
+    window.chessUndo = chessUndo;
+    window.mmStartGame = mmStartGame;
+    window.mmResetGame = mmResetGame;
+  </script>
+</body>
+</html>
